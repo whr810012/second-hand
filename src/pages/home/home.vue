@@ -1,0 +1,457 @@
+<template>
+	<div class="home_box">
+		<!-- 轮播图 -->
+		<view class="wrap">
+			<u-swiper :list="waraplist" :effect3d="true"></u-swiper>
+		</view>
+		<view class="newadd">
+			趣味功能
+		</view>
+		<!-- 创新点 -->
+		<div class="home_top_box">
+			<div class="home_topleft_box" @click="goai">
+			</div>
+			<div class="home_topright_box" @click="gomap"></div>
+		</div>
+		<!-- 搜索框 -->
+		<div class="input_box">
+			<div class="search_input_box">
+				<input placeholder="    请输入搜索信息" class="search_input" type="text" v-model="inputdata" />
+			</div>
+			<div class="button_input" style="width: 20%;" @click='startsearch'>搜索</div>
+		</div>
+		<!-- 筛选 -->
+		<view class="shaixuan">
+			<u-dropdown>
+				<u-dropdown-item v-model="value1" title="排序" :options="options1"></u-dropdown-item>
+				<u-dropdown-item height="450rpx" v-model="value2" title="分类" :options="options2"></u-dropdown-item>
+			</u-dropdown>
+		</view>
+		<!-- 瀑布流 -->
+		<view class="pubu">
+			<!-- <u-button @click="clear">清空列表</u-button> -->
+			<u-waterfall v-model="flowList" ref="uWaterfall">
+				<template v-slot:left="{leftList}">
+					<view class="demo-warter" v-for="(item, index) in leftList" :key="index">
+						<!-- 警告：微信小程序中需要hx2.8.11版本才支持在template中结合其他组件，比如下方的lazy-load组件 -->
+						<u-lazy-load threshold="-450" border-radius="10" :image="item.image"
+							:index="index"></u-lazy-load>
+						<view class="demo-title">
+							{{item.title}}
+						</view>
+						<view class="demo-price">
+							{{item.price}}元
+						</view>
+						<view class="demo-tag">
+							<view class="demo-tag-owner">
+								自营
+							</view>
+							<view class="demo-tag-text">
+								放心购
+							</view>
+						</view>
+						<view class="demo-shop">
+							{{item.shop}}
+						</view>
+						<!-- <u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close"
+							@click="remove(item.id)"></u-icon> -->
+					</view>
+				</template>
+				<template v-slot:right="{rightList}">
+					<view class="demo-warter" v-for="(item, index) in rightList" :key="index">
+						<u-lazy-load threshold="-450" border-radius="10" :image="item.image"
+							:index="index"></u-lazy-load>
+						<view class="demo-title">
+							{{item.title}}
+						</view>
+						<view class="demo-price">
+							{{item.price}}元
+						</view>
+						<view class="demo-tag">
+							<view class="demo-tag-owner">
+								自营
+							</view>
+							<view class="demo-tag-text">
+								放心购
+							</view>
+						</view>
+						<view class="demo-shop">
+							{{item.shop}}
+						</view>
+						<!-- <u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close"
+							@click="remove(item.id)"></u-icon> -->
+					</view>
+				</template>
+			</u-waterfall>
+			<u-loadmore bg-color="rgb(240, 240, 240)" :status="loadStatus" @loadmore="addRandomData"></u-loadmore>
+		</view>
+		<u-tabbar class="tabbar" :list="tablist" :mid-button="true" bg-color="rgba(255, 255, 255, 1)"
+			inactive-color="rgba(41, 44, 53, 0.30)" mid-button-size="150rpx" icon-size="50rpx" @change="clicktabbar">
+		</u-tabbar>
+	</div>
+
+</template>
+
+<script>
+	import indexStore from '../../../store/index.js'
+	export default {
+		data() {
+			return {
+				// 轮播图数据
+				waraplist: [{
+						image: 'https://cdn.uviewui.com/uview/swiper/1.jpg',
+						title: '昨夜星辰昨夜风，画楼西畔桂堂东'
+					},
+					{
+						image: 'https://cdn.uviewui.com/uview/swiper/2.jpg',
+						title: '身无彩凤双飞翼，心有灵犀一点通'
+					},
+					{
+						image: 'https://cdn.uviewui.com/uview/swiper/3.jpg',
+						title: '谁念西风独自凉，萧萧黄叶闭疏窗，沉思往事立残阳'
+					},
+
+				],
+				// 搜索框
+				inputdata: '',
+				// 下拉菜单
+				value1: 1,
+				value2: 1,
+				options1: [{
+						label: '默认排序',
+						value: 1,
+					},
+					{
+						label: '价格升序',
+						value: 2,
+					},
+					{
+						label: '价格降序',
+						value: 3,
+					}
+				],
+				options2: [{
+						label: '默认',
+						value: 1
+					},
+					{
+						label: '书籍',
+						value: 2,
+					},
+					{
+						label: '电子产品',
+						value: 3
+					},
+					{
+						label: '衣物',
+						value: 4
+					},
+					{
+						label: '化妆\护肤',
+						value: 5
+
+					}
+				],
+				// 瀑布
+				loadStatus: 'loadmore',
+				flowList: [],
+				list: [{
+						price: 35,
+						title: '北国风光，千里冰封，万里雪飘',
+						shop: '李白杜甫白居易旗舰店',
+						image: 'http://pic.sc.chinaz.com/Files/pic/pic9/202002/zzpic23327_s.jpg',
+					},
+					{
+						price: 75,
+						title: '望长城内外，惟余莽莽',
+						shop: '李白杜甫白居易旗舰店',
+						image: 'http://pic.sc.chinaz.com/Files/pic/pic9/202002/zzpic23325_s.jpg',
+					},
+					{
+						price: 385,
+						title: '大河上下，顿失滔滔',
+						shop: '李白杜甫白居易旗舰店',
+						image: 'http://pic2.sc.chinaz.com/Files/pic/pic9/202002/hpic2119_s.jpg',
+					},
+					{
+						price: 784,
+						title: '欲与天公试比高',
+						shop: '李白杜甫白居易旗舰店',
+						image: 'http://pic2.sc.chinaz.com/Files/pic/pic9/202002/zzpic23369_s.jpg',
+					},
+					{
+						price: 7891,
+						title: '须晴日，看红装素裹，分外妖娆',
+						shop: '李白杜甫白居易旗舰店',
+						image: 'http://pic2.sc.chinaz.com/Files/pic/pic9/202002/hpic2130_s.jpg',
+					},
+					{
+						price: 2341,
+						shop: '李白杜甫白居易旗舰店',
+						title: '江山如此多娇，引无数英雄竞折腰',
+						image: 'http://pic1.sc.chinaz.com/Files/pic/pic9/202002/zzpic23346_s.jpg',
+					},
+					{
+						price: 661,
+						shop: '李白杜甫白居易旗舰店',
+						title: '惜秦皇汉武，略输文采',
+						image: 'http://pic1.sc.chinaz.com/Files/pic/pic9/202002/zzpic23344_s.jpg',
+					},
+					{
+						price: 1654,
+						title: '唐宗宋祖，稍逊风骚',
+						shop: '李白杜甫白居易旗舰店',
+						image: 'http://pic1.sc.chinaz.com/Files/pic/pic9/202002/zzpic23343_s.jpg',
+					},
+					{
+						price: 1678,
+						title: '一代天骄，成吉思汗',
+						shop: '李白杜甫白居易旗舰店',
+						image: 'http://pic1.sc.chinaz.com/Files/pic/pic9/202002/zzpic23343_s.jpg',
+					},
+					{
+						price: 924,
+						title: '只识弯弓射大雕',
+						shop: '李白杜甫白居易旗舰店',
+						image: 'http://pic1.sc.chinaz.com/Files/pic/pic9/202002/zzpic23343_s.jpg',
+					},
+					{
+						price: 8243,
+						title: '俱往矣，数风流人物，还看今朝',
+						shop: '李白杜甫白居易旗舰店',
+						image: 'http://pic1.sc.chinaz.com/Files/pic/pic9/202002/zzpic23343_s.jpg',
+					},
+				],
+				tablist: ''
+			}
+		},
+		methods: {
+			gomap() {
+				uni.navigateTo({
+					url: "/pages/homemap/homemap",
+					fail: e => {
+						console.log(e);
+					}
+				});
+			},
+			goai() {
+				uni.navigateTo({
+					url: "/pages/ai/ai",
+					fail: e => {
+						console.log(e);
+					}
+				});
+			},
+			startsearch() {
+				console.log('开始搜索', this.inputdata);
+			},
+			// 瀑布
+			addRandomData() {
+				for (let i = 0; i < 10; i++) {
+					let index = this.$u.random(0, this.list.length - 1);
+					// 先转成字符串再转成对象，避免数组对象引用导致数据混乱
+					let item = JSON.parse(JSON.stringify(this.list[index]))
+					item.id = this.$u.guid();
+					this.flowList.push(item);
+				}
+			},
+			remove(id) {
+				this.$refs.uWaterfall.remove(id);
+			},
+			clicktabbar(){
+				console.log('开始发布');
+			}
+		},
+		onLoad() {
+			this.addRandomData();
+			this.tablist = indexStore.state.list
+		},
+	}
+</script>
+
+<style lang="scss" scoped>
+	.home_box {
+		width: 100%;
+		height: 100vh;
+		background-color: #f5f5f5;
+		overflow-y: scroll;
+
+		.newadd {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 70rpx;
+			background: rgba(164, 169, 255, 0.5);
+
+			// background-color: 
+			color: rgba(255, 255, 255, 0.5);
+			text-shadow: 0px 1px 0px #B24949;
+			font-family: FZChaoCuHei-M10S;
+			font-size: 20px;
+			font-style: normal;
+			font-weight: 600;
+			line-height: normal;
+			letter-spacing: 0.311px;
+			text-align: center;
+			-webkit-text-stroke: 1px rgba(255, 255, 255, 0.90);
+			/*文字描边*/
+			-webkit-text-fill-color: transparent;
+		}
+
+		.wrap {
+			padding: 40rpx;
+		}
+
+		.home_top_box {
+			margin-top: 40rpx;
+			// width: 100%;
+			height: 200rpx;
+			// background-color: antiquewhite;
+			display: flex;
+			justify-content: space-around;
+			border: 2px solid #B24949;
+			margin-left: 10rpx;
+			margin-right: 10rpx;
+			border-radius: 20rpx;
+			background-color: aliceblue;
+
+			.home_topleft_box {
+				margin-top: 10rpx;
+				margin-bottom: 10rpx;
+				padding: 1px;
+				width: 45%;
+				// height: 100%;
+				background-color: aqua;
+				border-radius: 30rpx;
+				background-image: url('../../static/home/aibg.jpg');
+				background-size: 100% 100%;
+				// background-size: cover;
+				background-repeat: no-repeat;
+				border: 1px solid #000;
+			}
+
+			.home_topright_box {
+				margin-top: 10rpx;
+				margin-bottom: 10rpx;
+				padding: 1px;
+				width: 45%;
+				// height: 100%;
+				background-color: aqua;
+				border-radius: 30rpx;
+				background-image: url('../../static/map.png');
+				background-size: 100% 100%;
+				// background-size: cover;
+				background-repeat: no-repeat;
+				border: 1px solid #000;
+			}
+		}
+
+		.input_box {
+			margin-top: 20rpx;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 60rpx;
+
+			.search_input_box {
+				width: 80%;
+				height: 100%;
+				margin-left: 20rpx;
+				border-radius: 30rpx;
+				border: 1px solid #000;
+
+				.search_input {
+					margin-left: 20rpx;
+					line-height: 100%;
+					height: 100%;
+				}
+			}
+
+			.button_input {
+				height: 100%;
+				// height: 12.5px;
+				width: 20%;
+				margin-left: 20rpx;
+				margin-right: 20rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				// border: 1px solid #000;
+				border-radius: 20rpx;
+				background: #B24949;
+				color: #FFFEFE;
+				// line-height: 60rpx;
+			}
+		}
+
+		.shaixuan {}
+
+		.pubu {
+			.demo-warter {
+				border-radius: 8px;
+				margin: 5px;
+				background-color: #ffffff;
+				padding: 8px;
+				position: relative;
+			}
+
+			.u-close {
+				position: absolute;
+				top: 32rpx;
+				right: 32rpx;
+			}
+
+			.demo-image {
+				width: 100%;
+				border-radius: 4px;
+			}
+
+			.demo-title {
+				font-size: 30rpx;
+				margin-top: 5px;
+				color: $u-main-color;
+			}
+
+			.demo-tag {
+				display: flex;
+				margin-top: 5px;
+			}
+
+			.demo-tag-owner {
+				background-color: $u-type-error;
+				color: #FFFFFF;
+				display: flex;
+				align-items: center;
+				padding: 4rpx 14rpx;
+				border-radius: 50rpx;
+				font-size: 20rpx;
+				line-height: 1;
+			}
+
+			.demo-tag-text {
+				border: 1px solid $u-type-primary;
+				color: $u-type-primary;
+				margin-left: 10px;
+				border-radius: 50rpx;
+				line-height: 1;
+				padding: 4rpx 14rpx;
+				display: flex;
+				align-items: center;
+				border-radius: 50rpx;
+				font-size: 20rpx;
+			}
+
+			.demo-price {
+				font-size: 30rpx;
+				color: $u-type-error;
+				margin-top: 5px;
+			}
+
+			.demo-shop {
+				font-size: 22rpx;
+				color: $u-tips-color;
+				margin-top: 5px;
+			}
+		}
+	}
+</style>

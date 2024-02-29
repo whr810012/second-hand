@@ -1,0 +1,126 @@
+{
+	"easycom": {
+		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+	},
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "uni-app",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/map/map",
+			"style": {
+				"navigationBarTitleText": "澳门"
+			}
+		},
+		{
+			"path": "pages/car/car",
+			"style": {
+				"navigationBarTitleText": "uni-app",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/goods/goods",
+			"style": {
+				"navigationBarTitleText": "全部商品"
+			}
+		},
+		{
+			"path": "pages/spot/spot",
+			"style": {
+				"navigationBarTitleText": "景点详情"
+			}
+		},
+		{
+			"path": "pages/detail/detail",
+			"style": {
+				"navigationBarTitleText": "店铺详情"
+			}
+		},
+		{
+			"path": "pages/storeImage/storeImage",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+			}
+
+		},
+		{
+			"path" : "pages/pay-history/pay-history",
+			"style" : 
+			{
+				"navigationBarTitleText" : "购卡记录",
+				"enablePullDownRefresh" : false
+			}
+		},
+		{
+			"path" : "pages/home/home",
+			"style" : 
+			{
+				"navigationBarTitleText" : "主页",
+				"enablePullDownRefresh" : false
+			}
+		},
+		{
+			"path" : "pages/homemap/homemap",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"enablePullDownRefresh" : false
+			}
+		},
+		{
+			"path" : "pages/ai/ai",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"enablePullDownRefresh" : false
+			}
+		},
+		{
+			"path" : "pages/addgoods/addgoods",
+			"style" : 
+			{
+				"navigationBarTitleText" : "商品发布",
+				"enablePullDownRefresh" : false
+			}
+		},
+		{
+			"path" : "pages/myinfor/myinfor",
+			"style" : 
+			{
+				"navigationBarTitleText" : "个人信息",
+				"enablePullDownRefresh" : false
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar": {
+		"selectedColor": "#292C35",
+		"backgroundColor": "rgba(255, 255, 255, 0.92)",
+		"borderStyle": "white",
+
+
+		"list": [{
+				"pagePath": "pages/home/home"
+
+			},
+			{
+					"pagePath": "pages/addgoods/addgoods"
+			
+				},
+			{
+				"pagePath": "pages/myinfor/myinfor"
+			}
+		]
+	}
+}
