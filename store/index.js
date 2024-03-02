@@ -38,7 +38,7 @@ const indexStore = new Vuex.Store({
 			},
 			{
 				"pagePath": "/pages/myinfor/myinfor",
-				"text": "商品",
+				"text": "我的",
 				"iconPath": "/static/tabbar/no-my.svg",
 				"selectedIconPath": "/static/tabbar/mymy.svg"
 			}
