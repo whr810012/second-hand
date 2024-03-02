@@ -1,9 +1,9 @@
 <template>
 	<view class="detail">
-		<view class="detail-image" v-if="shopdetail.img_url">
+		<view class="detail-image" v-if="shopdetail.image">
 
 			<scroll-view class="scroll-view_H" scroll-x="true" scroll-left="0" enable-flex="true">
-				<view class="scroll-view-item_H" v-for="item in shopdetail.img_url" :key="item" @touchend="changeRight"
+				<view class="scroll-view-item_H" v-for="item in shopdetail.image" :key="item" @touchend="changeRight"
 					@click="seeImg">
 					<image class="scroll-img"
 						:src="item||'http://pic.sc.chinaz.com/Files/pic/pic9/202002/zzpic23327_s.jpg'" mode />
@@ -21,16 +21,14 @@
 		<!-- 店名+介绍+图片 -->
 		<view class="detail-name">
 			<view class="detail-name-left">
-				<view class="shopping-name">{{shopdetail.name}}</view>
-				<scroll-view scroll-y  class="shopping-detail">{{shopdetail.desc}}</scroll-view>
+				<view class="shopping-name">{{shopdetail.shop}}</view>
+				<scroll-view scroll-y  class="shopping-detail">{{shopdetail.title}}</scroll-view>
 			</view>
 			<view class="detail-name-right">
 				<view class="shopping-image">
 					<image :src="shopdetail.img_url[0] || shopimg"  />
 				</view>
-	<!-- 			<view class="shopping-discount">
-					<image src="@/static/discount.svg" />
-				</view> -->
+
 			</view>
 		</view>
 		<!-- 营业时间+位置 -->
@@ -66,84 +64,12 @@
 				</view>
 			</view>
 		</view>
-		<!-- 畅销top4 -->
-		<view class="detail-four" v-if="goodslist && goodslist.length">
-			<!-- 文字 -->
-			<view class="detail-four-text">畅销Top4商品</view>
-			<!-- 循环4 -->
-			<view v-for="(item,index) in goodslist" :key="item.id" class="goods_detail"
-				:class="index+1 === goodslist.length ? 'border_none' : ''">
-				<!-- 有问题显示 -->
-				<view class="goods_detail_box" v-if="item.discount == -1||item.discount == 1">
-					<view class="goods_detail_image">
-						<image :src="item.img_url[0]" />
-					</view>
-					<view class="goods_detail_text">
-						<view class="goods-name">{{item.name}}</view>
-						<!-- 三种判断 -->
-						<view v-if="item.discount == -1&&item.discounted_price == 0">
-							<view class="goods_detail_text_price" style="display: block;">
-								<view>
-									<span class="price_number_change">￥{{item.special_discount}}</span>
-								</view>
-								<view class="price_max_change" >市价{{item.price}}元</view>
-							</view>
-						</view>
-						<view v-if="item.discount == -1&&item.discounted_price != 0">
-							<view class="goods_discount_change">
-								<!-- <image src="@/static/discounttwo.svg" /> -->
-								<u-icon name="tags-fill" color="#B24949" size="20"></u-icon>
-								{{item.special_discount}}
-							</view>
-							<view class="goods_detail_text_price">
-								<view>
-									<span class="price_icon">￥</span>
-									<span class="price_number">{{item.discounted_price}}</span>
-								</view>
-								<view class="price_max">市价{{item.price}}元</view>
-							</view>
-						</view>
-						<view v-if="item.discount == 1">
-							<view class="goods_detail_text_price">
-								<view>
-									<span class="price_icon">￥</span>
-									<span class="price_number">{{item.discounted_price}}</span>
-								</view>
-							</view>
-						</view>
-
-					</view>
-				</view>
-				<!-- 正常 -->
-				<view class="goods_detail_box" v-else>
-					<view class="goods_detail_image">
-						<image :src="item.img_url[0]" />
-					</view>
-					<view class="goods_detail_text">
-						<view class="goods-name">{{item.name}}</view>
-						<view class="goods_discount">
-							<!-- <image src="@/static/discounttwo.svg" /> -->
-							<u-icon name="tags-fill" color="#B24949" size="20"></u-icon>
-							{{item.discount*10}}折
-						</view>
-						<view class="goods_detail_text_price">
-							<view>
-								<span class="price_icon">￥</span>
-								<span class="price_number">{{item.discounted_price}}</span>
-							</view>
-							<view class="price_max">市价{{item.price}}元</view>
-						</view>
-					</view>
-				</view>
-
+		<view class="line"></view>
+			<!-- 确认交易 -->
+			<view class="over">
+				<button class="over_btn" @click='opentime'>确认交易</button>
 			</view>
-			<!-- 提示 -->
-			<view class="hint">🔥更多特色商品请到店铺选购</view>
-		</view>
-		<popup class="popup" :popupList="popupList" :isPopup="isPopup" :isClose="isClose" :isButton="isButton"
-			:textState="textState" :popup.sync="isPopup">
-		</popup>
-		<qd-code class="qd-code" :popup.sync="isPopup" @goback="goback"></qd-code>
+	
 	</view>
 </template>
 
@@ -169,34 +95,13 @@
 				goodslist: [],
 				// 距离
 				distance: '',
-				// 轮播图数据
-				popupList: [{
-					id: 0,
-					imgUrl: 'https://tutu-aomen.s3.cn-northwest-1.amazonaws.com.cn/landing/%E4%BA%8C%E7%BB%B4%E7%A0%81%E5%BC%B9%E7%AA%97.png'
-				}, ],
-				// 控制弹窗
-				isPopup: false,
-				// 是否有按钮
-				isButton: false,
-				// 是否有关闭icon
-				isClose: true,
-				// textState：文字状态
-				// 0为：畅玩澳门，1：9.9元 续购
+				
 				textState: 0,
 				userLat: '',
 				userLong: ''
 			}
 		},
-		onShareAppMessage(res) {
-			if (res.from === 'button') { // 来自页面内分享按钮
-				console.log(res.target)
-			}
-			return {
-				title: '澳淘卡',
-				path: '/pages/index/index',
-				imageUrl: 'https://tutu-aomen.s3.cn-northwest-1.amazonaws.com.cn/poi_icons/澳淘卡.png'
-			}
-		},
+		
 		methods: {
 			// 滑动结束事件
 			changeRight() {
@@ -213,7 +118,7 @@
 					// 跳转+让查看所有消失
 					this.isRight = true
 					uni.navigateTo({
-						url: `/pages/storeImage/storeImage?imglist=${encodeURIComponent(JSON.stringify(this.shopdetail.img_url))}&videolist=${encodeURIComponent(JSON.stringify(this.shopdetail.video_url))}`,
+						url: `/pages/storeImage/storeImage?imglist=${encodeURIComponent(JSON.stringify(this.shopdetail.image))}&videolist=${encodeURIComponent(JSON.stringify(this.shopdetail.video_url))}`,
 						success: () => {
 
 							this.isRight = false
@@ -228,7 +133,7 @@
 			},
 			seeImg() {
 				uni.navigateTo({
-					url: `/pages/storeImage/storeImage?imglist=${encodeURIComponent(JSON.stringify(this.shopdetail.img_url))}&videolist=${encodeURIComponent(JSON.stringify(this.shopdetail.video_url))}`
+					url: `/pages/storeImage/storeImage?imglist=${encodeURIComponent(JSON.stringify(this.shopdetail.image))}&videolist=${encodeURIComponent(JSON.stringify(this.shopdetail.video_url))}`
 				})
 			},
 			goback() {
@@ -238,8 +143,8 @@
 			nav(item) {
 				console.log('nav=', item);
 				uni.openLocation({
-					longitude: +item.position.nav_lon,
-					latitude: +item.position.nav_lat,
+					longitude: +item.longitude,
+					latitude: +item.latitude,
 					destination: item.name,
 					address: item.address,
 					success: function(res) {
@@ -266,6 +171,9 @@
 						}
 					})
 				})
+			},
+			opentime(){
+				console.log(this.goodslist);
 			}
 		},
 		async onLoad(option) {
@@ -273,8 +181,8 @@
 			// console.log(option.item);
 			console.log("goods拿过来的", JSON.parse(decodeURIComponent(option.item)));
 			
-			console.log((JSON.parse(decodeURIComponent(option.item))).img_url[0]);
-			this.shopimg = (JSON.parse(decodeURIComponent(option.item))).img_url[0]
+			console.log((JSON.parse(decodeURIComponent(option.item))).image);
+			this.shopimg = (JSON.parse(decodeURIComponent(option.item))).image
 			console.log(this.shopimg);
 			// 获取当前经纬度
 			await this.getUserLocation()
@@ -292,24 +200,17 @@
 			console.log('.shop_id', option.item.shop_id);
 			// console.log('.chain_store_id',JSON.parse(decodeURIComponent(option.item)).chain_store_id);
 
-			const shop_id = JSON.parse(decodeURIComponent(option.item)).shop_id
+			// const shop_id = JSON.parse(decodeURIComponent(option.item)).shop_id
 
-			const chain_store_id = JSON.parse(decodeURIComponent(option.item)).chain_store_id
-			const shoplist = await indexStore.dispatch('getPois', {
-				id: shop_id,
-				user_loc: {
-					long: this.userLong,
-					lat: this.userLat
-				},
-				chain_store_id: chain_store_id
-			})
+			// const chain_store_id = JSON.parse(decodeURIComponent(option.item)).chain_store_id
+			const shoplist = JSON.parse(decodeURIComponent(option.item))
 			console.log("总的店铺数据", shoplist);
-			this.shopdetail = shoplist.poi_list[0]
-			this.goodslist = shoplist.products || []
+			this.shopdetail = shoplist
+			this.goodslist = shoplist
 			console.log('商铺信息', this.shopdetail)
 			console.log('商品信息', this.goodslist)
-			this.distance = space(this.userLat, this.userLong, this.shopdetail.position.lat, this
-				.shopdetail.position.long).toFixed(1)
+			this.distance = space(this.userLat, this.userLong, this.shopdetail.latitude, this
+				.shopdetail.longitude).toFixed(1)
 			console.log("相差距离", this.distance);
 		},
 		onReady() {
@@ -805,6 +706,15 @@
 	.popup {
 		::v-deep .u-mode-center-box {
 			background-color: transparent !important;
+		}
+	}
+	.over{
+		text-align: center;
+		line-height: 100rpx;
+		background-color: white;
+		height: 300rpx;
+		.over_btn{
+			margin-top: 100rpx;
 		}
 	}
 </style>

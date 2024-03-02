@@ -73,11 +73,11 @@
 		},
 		onLoad(option) {
 			console.log("商品照片", JSON.parse(decodeURIComponent(option.imglist)))
-			console.log("视频", JSON.parse(decodeURIComponent(option.videolist)))
+			// console.log("视频", JSON.parse(decodeURIComponent(option.videolist)))
 			// 获取视频列表
 			
-			this.videoData = JSON.parse(decodeURIComponent(option.videolist))
-			console.log('传过来的视频数量',this.videoData.length);
+			// this.videoData = JSON.parse(decodeURIComponent(option.videolist))
+			// console.log('传过来的视频数量',this.videoData.length);
 
 			
 			// 获取照片列表
@@ -94,16 +94,7 @@
 			// console.log("imagelist",this.imageList);
 			// this.$forceUpdate()
 		},
-		onShareAppMessage(res) {
-			if (res.from === 'button') { // 来自页面内分享按钮
-				console.log(res.target)
-			}
-			return {
-				title: '澳淘卡',
-				path: '/pages/index/index',
-				imageUrl: 'https://tutu-aomen.s3.cn-northwest-1.amazonaws.com.cn/poi_icons/澳淘卡.png'
-			}
-		},
+	
 		methods: {
 			toBack() {
 				uni.navigateBack()

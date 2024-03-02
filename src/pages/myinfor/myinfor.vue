@@ -37,10 +37,11 @@
 							<!-- <view class="demo-shop">
 								{{ item.shop }}
 							</view> -->
-							<!-- <u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close"
-							@click="remove(item.id)"></u-icon> -->
+							<u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close"
+								@click="remove(item.id)"></u-icon>
 						</view>
 					</template>
+
 					<template v-slot:right="{ rightList }">
 						<view class="demo-warter" v-for="(item, index) in rightList" :key="index">
 							<u-lazy-load threshold="-450" border-radius="10" :image="item.image"
@@ -62,8 +63,8 @@
 							<!-- <view class="demo-shop">
 								{{ item.shop }}
 							</view> -->
-							<!-- <u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close"
-							@click="remove(item.id)"></u-icon> -->
+							<u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close"
+								@click="remove(item.id)"></u-icon>
 						</view>
 					</template>
 				</u-waterfall>
@@ -172,6 +173,9 @@ export default {
 				item.id = this.$u.guid();
 				this.flowList.push(item);
 			}
+		},
+		remove(id) {
+			this.$refs.uWaterfall.remove(id);
 		},
 	}
 }
