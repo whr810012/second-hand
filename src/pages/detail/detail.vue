@@ -22,11 +22,11 @@
 		<view class="detail-name">
 			<view class="detail-name-left">
 				<view class="shopping-name">{{shopdetail.shop}}</view>
-				<scroll-view scroll-y  class="shopping-detail">{{shopdetail.title}}</scroll-view>
+				<scroll-view scroll-y class="shopping-detail">{{shopdetail.title}}</scroll-view>
 			</view>
 			<view class="detail-name-right">
 				<view class="shopping-image">
-					<image :src="shopdetail.img_url[0] || shopimg"  />
+					<image :src="shopdetail.img_url[0] || shopimg" />
 				</view>
 
 			</view>
@@ -65,11 +65,18 @@
 			</view>
 		</view>
 		<view class="line"></view>
-			<!-- 确认交易 -->
-			<view class="over">
-				<button class="over_btn" @click='opentime'>确认交易</button>
-			</view>
-	
+		<view>
+			<uni-datetime-picker ref="dateTimePicker" v-model="overtime"></uni-datetime-picker>
+		</view>
+		<!-- 确认交易 -->
+		<view class="over">
+			<button class="over_btn" @click='opentime'>确认交易</button>
+		</view>
+		<!-- 提示 -->
+		<view>
+			<u-toast ref="uToast" :isTab='true' />
+		</view>
+
 	</view>
 </template>
 
@@ -85,7 +92,7 @@
 		},
 		data() {
 			return {
-				shopimg:'',
+				shopimg: '',
 				seeALLtext: '查看更多',
 				// seeall class切换
 				isRight: false,
@@ -95,13 +102,13 @@
 				goodslist: [],
 				// 距离
 				distance: '',
-				
+				overtime: '',
 				textState: 0,
 				userLat: '',
 				userLong: ''
 			}
 		},
-		
+
 		methods: {
 			// 滑动结束事件
 			changeRight() {
@@ -172,15 +179,37 @@
 					})
 				})
 			},
-			opentime(){
+			 opentime() {
 				console.log(this.goodslist);
-			}
+				console.log(this.overtime);
+				if (!this.overtime) {
+					console.log('请先选择交易时间');
+					this.$refs.uToast.show({
+						title: '请选择交易时间',
+						type: 'error',
+						// url: '/pages/user/index'
+					})
+				} else {
+					console.log('达成交易');
+					 this.$refs.uToast.show({
+						title: '交易已达成~',
+						type: 'success',
+					})
+					setTimeout(()=>{
+						uni.navigateBack({
+							
+						});
+					},1500)
+					
+				}
+			},
+
 		},
 		async onLoad(option) {
 			// 拿店铺数据
 			// console.log(option.item);
 			console.log("goods拿过来的", JSON.parse(decodeURIComponent(option.item)));
-			
+
 			console.log((JSON.parse(decodeURIComponent(option.item))).image);
 			this.shopimg = (JSON.parse(decodeURIComponent(option.item))).image
 			console.log(this.shopimg);
@@ -353,7 +382,7 @@
 			font-weight: 400;
 			line-height: normal;
 			overflow: hidden;
-			height:115rpx;
+			height: 115rpx;
 		}
 
 		// 店铺照片
@@ -638,7 +667,8 @@
 							font-weight: 500;
 							line-height: normal;
 						}
-						.price_number_change{
+
+						.price_number_change {
 							color: #b24949;
 							text-align: center;
 							font-family: PingFang SC;
@@ -659,7 +689,8 @@
 							font-weight: 400;
 							line-height: normal;
 						}
-						.price_max_change{
+
+						.price_max_change {
 							padding-left: 18rpx;
 							text-decoration: line-through;
 							color: #7e8085;
@@ -708,12 +739,14 @@
 			background-color: transparent !important;
 		}
 	}
-	.over{
+
+	.over {
 		text-align: center;
 		line-height: 100rpx;
 		background-color: white;
 		height: 300rpx;
-		.over_btn{
+
+		.over_btn {
 			margin-top: 100rpx;
 		}
 	}

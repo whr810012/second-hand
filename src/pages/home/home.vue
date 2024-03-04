@@ -34,7 +34,7 @@
 				<template v-slot:left="{leftList}">
 					<view class="demo-warter" v-for="(item, index) in leftList" :key="index" @click="gobuy(item)">
 						<!-- 警告：微信小程序中需要hx2.8.11版本才支持在template中结合其他组件，比如下方的lazy-load组件 -->
-						<u-lazy-load threshold="-450" border-radius="10" :image="item.image"
+						<u-lazy-load threshold="-450" border-radius="10" :image="item.image[0]"
 							:index="index"></u-lazy-load>
 						<view class="demo-title">
 							{{item.title}}
@@ -59,7 +59,7 @@
 				</template>
 				<template v-slot:right="{rightList}">
 					<view class="demo-warter" v-for="(item, index) in rightList" :key="index" @click="gobuy(item)">
-						<u-lazy-load threshold="-450" border-radius="10" :image="item.image"
+						<u-lazy-load threshold="-450" border-radius="10" :image="item.image[0]"
 							:index="index"></u-lazy-load>
 						<view class="demo-title">
 							{{item.title}}
@@ -83,7 +83,7 @@
 					</view>
 				</template>
 			</u-waterfall>
-			<u-loadmore bg-color="rgb(240, 240, 240)" :status="loadStatus" @loadmore="addRandomData"></u-loadmore>
+
 		</view>
 		<u-tabbar class="tabbar" :list="tablist" :mid-button="true" bg-color="rgba(255, 255, 255, 1)"
 			inactive-color="rgba(41, 44, 53, 0.30)" mid-button-size="150rpx" icon-size="50rpx" @change="clicktabbar">
@@ -97,6 +97,8 @@
 	export default {
 		data() {
 			return {
+				// 搜索内容
+				searchname:'',
 				// 轮播图数据
 				waraplist: [{
 						image: 'https://cdn.uviewui.com/uview/swiper/1.jpg',
@@ -156,26 +158,117 @@
 				loadStatus: 'loadmore',
 				flowList: [],
 				list: [{
+						id:1,
 						price: 35,
 						title: '北国风光，千里冰封，万里雪飘',
 						shop: '李白杜甫白居易旗舰店',
-						image: ['https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain','https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain'],
-						address:'山东政法学院',
+						image: ['https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain',
+							'https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain'
+						],
+						address: '山东政法学院',
 						// weidu
-						longitude:113,
-						latitude:67,
+						longitude: 113,
+						latitude: 67,
+						class: '电子产品'
 					},
 					{
-						price: 75,
+						id:2,
+						price: 7,
 						title: '望长城内外，惟余莽莽',
 						shop: '李白杜甫白居易旗舰店',
-						image: ['https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain','https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain'],
-						address:'山东政法学院',
+						image: ['https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain',
+							'https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain'
+						],
+						address: '山东政法学院',
 						// weidu
-						longitude:113,
-						latitude:67,
+						longitude: 113,
+						latitude: 67,
+						class: '书籍'
 					},
-					
+					{
+						id:3,
+						price: 3,
+						title: '北国风光，千里冰封，万里雪飘',
+						shop: '李白杜甫白居易旗舰店',
+						image: ['https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain',
+							'https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain'
+						],
+						address: '山东政法学院',
+						// weidu
+						longitude: 113,
+						latitude: 67,
+						class: '电子产品'
+					},
+					{
+						id:4,
+						price: 115,
+						title: '望长城内外，惟余莽莽',
+						shop: '李白杜甫白居易旗舰店',
+						image: ['https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain',
+							'https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain'
+						],
+						address: '山东政法学院',
+						// weidu
+						longitude: 113,
+						latitude: 67,
+						class: '书籍'
+					},
+					{
+						id:5,
+						price: 235,
+						title: '北国风光，千里冰封，万里雪飘',
+						shop: '李白杜甫白居易旗舰店',
+						image: ['https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain',
+							'https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain'
+						],
+						address: '山东政法学院',
+						// weidu
+						longitude: 113,
+						latitude: 67,
+						class: '电子产品'
+					},
+					{
+						id:6,
+						price: 475,
+						title: '望长城内外，惟余莽莽',
+						shop: '李白杜甫白居易旗舰店',
+						image: ['https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain',
+							'https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain'
+						],
+						address: '山东政法学院',
+						// weidu
+						longitude: 113,
+						latitude: 67,
+						class: '书籍'
+					},
+					{
+						id:7,
+						price: 735,
+						title: '北国风光，千里冰封，万里雪飘',
+						shop: '李白杜甫白居易旗舰店',
+						image: ['https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain',
+							'https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain'
+						],
+						address: '山东政法学院',
+						// weidu
+						longitude: 113,
+						latitude: 67,
+						class: '电子产品'
+					},
+					{
+						id:8,
+						price: 975,
+						title: '望长城内外，惟余莽莽',
+						shop: '李白杜甫白居易旗舰店',
+						image: ['https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain',
+							'https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain'
+						],
+						address: '山东政法学院',
+						// weidu
+						longitude: 113,
+						latitude: 67,
+						class: '书籍'
+					},
 				],
 				tablist: ''
 			}
@@ -199,27 +292,33 @@
 			},
 			startsearch() {
 				console.log('开始搜索', this.inputdata);
+				let filteredArray = this.list.filter(obj => obj.title.includes(this.inputdata)||obj.shop.includes(this.inputdata));
+				console.log('新的',filteredArray);
+				   this.flowList = []; // 先清空列表
+				    
+				        this.flowList = filteredArray; // 重新赋值来触发更新
+				    
+					console.log(this.flowList);
+				   // this.$nextTick(() => {
+				   //      this.$refs.uWaterfall.refresh(); // 假设 u-waterfall 提供了 refresh 方法用于强制刷新
+				   //  });
 			},
 			// 瀑布
 			addRandomData() {
-				for (let i = 0; i < 10; i++) {
-					let index = this.$u.random(0, this.list.length - 1);
-					// 先转成字符串再转成对象，避免数组对象引用导致数据混乱
-					let item = JSON.parse(JSON.stringify(this.list[index]))
-					item.id = this.$u.guid();
-					this.flowList.push(item);
-				}
+
+				this.flowList = this.list
+
 			},
 			remove(id) {
 				this.$refs.uWaterfall.remove(id);
 			},
-			gobuy(item){
+			gobuy(item) {
 				console.log(item);
 				uni.navigateTo({
 					url: `/pages/detail/detail?item=${encodeURIComponent(JSON.stringify(item))}`
 				});
 			},
-			clicktabbar(){
+			clicktabbar() {
 				console.log('开始发布');
 			}
 		},
