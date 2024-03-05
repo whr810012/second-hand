@@ -291,17 +291,24 @@
 				});
 			},
 			startsearch() {
-				console.log('开始搜索', this.inputdata);
-				let filteredArray = this.list.filter(obj => obj.title.includes(this.inputdata)||obj.shop.includes(this.inputdata));
-				console.log('新的',filteredArray);
-				   this.flowList = []; // 先清空列表
-				    
-				        this.flowList = filteredArray; // 重新赋值来触发更新
-				    
+				if(this.value1===1 && this.value2 === 1){
+					console.log('开始搜索', this.inputdata);
+					let filteredArray = this.list.filter(obj => obj.title.includes(this.inputdata)||obj.shop.includes(this.inputdata));
+					console.log('新的',filteredArray);
+					this.$refs.uWaterfall.clear();
+					this.flowList = filteredArray; // 重新赋值来触发更新
 					console.log(this.flowList);
-				   // this.$nextTick(() => {
-				   //      this.$refs.uWaterfall.refresh(); // 假设 u-waterfall 提供了 refresh 方法用于强制刷新
-				   //  });
+					return;
+				}
+				if(this.value1 !== 1 || this.value2 !== 1){
+					console.log('开始搜索', this.inputdata);
+					let filteredArray = this.flowList.filter(obj => obj.title.includes(this.inputdata)||obj.shop.includes(this.inputdata));
+					console.log('新的',filteredArray);
+					this.$refs.uWaterfall.clear();
+					this.flowList = filteredArray; // 重新赋值来触发更新
+					console.log(this.flowList);
+				}
+				  
 			},
 			// 瀑布
 			addRandomData() {
