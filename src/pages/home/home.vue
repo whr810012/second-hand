@@ -23,8 +23,8 @@
 		<!-- 筛选 -->
 		<view class="shaixuan">
 			<u-dropdown>
-				<u-dropdown-item v-model="value1" title="排序" :options="options1"></u-dropdown-item>
-				<u-dropdown-item height="450rpx" v-model="value2" title="分类" :options="options2"></u-dropdown-item>
+				<u-dropdown-item @change="startsort" v-model="value1" title="排序" :options="options1"></u-dropdown-item>
+				<u-dropdown-item @change="startclass" height="450rpx" v-model="value2" title="分类" :options="options2"></u-dropdown-item>
 			</u-dropdown>
 		</view>
 		<!-- 瀑布流 -->
@@ -317,8 +317,69 @@
 						this.flowList = filteredArray; // 重新赋值来触发更新
 					})
 					console.log(this.flowList);
+				}  
+			},
+			startsort(){
+				console.log(this.value1);
+				if(this.value1 === 1){
+					return
 				}
-				  
+				if(this.value1 === 2){
+					const arr = this.flowList
+					console.log('beforeee====',this.flowList);
+					this.$refs.uWaterfall.clear();
+					console.log('befor====',this.flowList);
+					let filteredArray = arr.sort((a, b) => a.price - b.price) // 重新赋值来触发更新
+					this.$nextTick(()=>{
+						this.flowList = filteredArray; // 重新赋值来触发更新
+					})
+					console.log('over====',this.flowList);
+					return
+				}
+				if(this.value1 === 3){
+					const arr = this.flowList
+					console.log('beforeee====',this.flowList);
+					this.$refs.uWaterfall.clear();
+					console.log('befor====',this.flowList);
+					let filteredArray = arr.sort((a, b) => b.price - a.price) // 重新赋值来触发更新
+					this.$nextTick(()=>{
+						this.flowList = filteredArray; // 重新赋值来触发更新
+					})
+					console.log('over====',this.flowList);
+					return
+				
+				}
+				
+			},
+			startclass(){
+				console.log(this.value2);
+				const classs = this.options2.filter(item=>item.value === this.value2)[0].label
+				console.log(classs);
+				if(this.value2 === 1){
+					if(this.flowList.length == this.list.length){
+						return
+					}else{
+						this.startsearch();
+						this.startsort();
+						return
+					}
+					
+				}
+				if(this.value1 === 1 && this.searchname == ''){
+					this.$refs.uWaterfall.clear();
+					let filteredArray = this.list.filter(item=>item.class == classs)
+					this.$nextTick(()=>{
+						this.flowList = filteredArray; // 重新赋值来触发更新
+					})
+					
+				}else{
+					const arr = this.flowList
+					this.$refs.uWaterfall.clear();
+					let filteredArray = arr.filter(item=>item.class == classs)
+					this.$nextTick(()=>{
+						this.flowList = filteredArray; // 重新赋值来触发更新
+					})
+				}
 			},
 			// 瀑布
 			addRandomData() {
