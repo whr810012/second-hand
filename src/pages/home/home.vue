@@ -30,7 +30,7 @@
 		<!-- 瀑布流 -->
 		<view class="pubu">
 			<!-- <u-button @click="clear">清空列表</u-button> -->
-			<u-waterfall v-model="flowList" ref="uWaterfall">
+			<u-waterfall class="wrap-box" v-model="flowList" ref="uWaterfall">
 				<template v-slot:left="{leftList}">
 					<view class="demo-warter" v-for="(item, index) in leftList" :key="index" @click="gobuy(item)">
 						<!-- 警告：微信小程序中需要hx2.8.11版本才支持在template中结合其他组件，比如下方的lazy-load组件 -->
@@ -83,6 +83,7 @@
 					</view>
 				</template>
 			</u-waterfall>
+			<!-- <u-loadmore bg-color="rgb(240, 240, 240)" :status="loadStatus" @loadmore="addRandomData"></u-loadmore> -->
 
 		</view>
 		<u-tabbar class="tabbar" :list="tablist" :mid-button="true" bg-color="rgba(255, 255, 255, 1)"
@@ -292,20 +293,29 @@
 			},
 			startsearch() {
 				if(this.value1===1 && this.value2 === 1){
-					console.log('开始搜索', this.inputdata);
-					let filteredArray = this.list.filter(obj => obj.title.includes(this.inputdata)||obj.shop.includes(this.inputdata));
-					console.log('新的',filteredArray);
+					console.log('beforeee====',this.flowList);
 					this.$refs.uWaterfall.clear();
-					this.flowList = filteredArray; // 重新赋值来触发更新
-					console.log(this.flowList);
+					// console.log('开始搜索', this.inputdata);
+					let filteredArray = this.list.filter(obj => obj.title.includes(this.inputdata)||obj.shop.includes(this.inputdata));
+					// console.log('新的',filteredArray);
+					console.log('befor====',this.flowList);
+					this.$nextTick(()=>{
+						this.flowList = filteredArray; // 重新赋值来触发更新
+					})
+					
+				
+					console.log('over====',this.flowList);
 					return;
 				}
 				if(this.value1 !== 1 || this.value2 !== 1){
+					this.$refs.uWaterfall.clear();
 					console.log('开始搜索', this.inputdata);
 					let filteredArray = this.flowList.filter(obj => obj.title.includes(this.inputdata)||obj.shop.includes(this.inputdata));
 					console.log('新的',filteredArray);
-					this.$refs.uWaterfall.clear();
-					this.flowList = filteredArray; // 重新赋值来触发更新
+					
+					this.$nextTick(()=>{
+						this.flowList = filteredArray; // 重新赋值来触发更新
+					})
 					console.log(this.flowList);
 				}
 				  
@@ -454,7 +464,8 @@
 		.shaixuan {}
 
 		.pubu {
-			.demo-warter {
+			.wrap-box{
+				.demo-warter {
 				border-radius: 8px;
 				margin: 5px;
 				background-color: #ffffff;
@@ -519,6 +530,8 @@
 				color: $u-tips-color;
 				margin-top: 5px;
 			}
+			}
+
 		}
 	}
 </style>
