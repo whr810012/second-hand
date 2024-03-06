@@ -322,7 +322,7 @@
 					page_size: this.page_size
 
 				})
-				console.log("this.flowList:", this.flowList)
+				
 			},
 			// 综合排序
 			// 1:默认，2：价格升序，3.价格降序 4.评论升序 5.评论降序

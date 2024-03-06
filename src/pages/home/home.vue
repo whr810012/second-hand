@@ -28,11 +28,11 @@
 			</u-dropdown>
 		</view>
 		<!-- 瀑布流 -->
-		<view class="pubu">
+		<view class="pubu" v-if="wf_show">
 			<!-- <u-button @click="clear">清空列表</u-button> -->
 			<u-waterfall v-model="flowList" ref="uWaterfall">
 				<template v-slot:left="{leftList}">
-					<view class="demo-warter" v-for="(item, index) in leftList" :key="index" @click="gobuy(item)">
+					<view class="demo-warter" v-for="(item, index) in leftList" :key="item.id"  @click="gobuy(item)">
 						<!-- 警告：微信小程序中需要hx2.8.11版本才支持在template中结合其他组件，比如下方的lazy-load组件 -->
 						<u-lazy-load threshold="-450" border-radius="10" :image="item.image[0]"
 							:index="index"></u-lazy-load>
@@ -58,7 +58,7 @@
 					</view>
 				</template>
 				<template v-slot:right="{rightList}">
-					<view class="demo-warter" v-for="(item, index) in rightList" :key="index" @click="gobuy(item)">
+					<view class="demo-warter" v-for="(item, index) in rightList" :key="item.id" @click="gobuy(item)">
 						<u-lazy-load threshold="-450" border-radius="10" :image="item.image[0]"
 							:index="index"></u-lazy-load>
 						<view class="demo-title">
@@ -114,6 +114,8 @@
 					},
 
 				],
+				//
+				wf_show:true,
 				// 搜索框
 				inputdata: '',
 				// 下拉菜单
@@ -157,7 +159,7 @@
 				// 瀑布
 				loadStatus: 'loadmore',
 				flowList: [],
-				list: [{
+				goodslist: [{
 						id:1,
 						price: 35,
 						title: '北国风光，千里冰封，万里雪飘',
@@ -273,6 +275,10 @@
 				tablist: ''
 			}
 		},
+		onLoad() {
+			this.addRandomData();
+			this.tablist = indexStore.state.list
+		},
 		methods: {
 			gomap() {
 				uni.navigateTo({
@@ -290,15 +296,15 @@
 					}
 				});
 			},
-			startsearch() {
+			 startsearch() {
 				console.log('开始搜索', this.inputdata);
-				let filteredArray = this.list.filter(obj => obj.title.includes(this.inputdata)||obj.shop.includes(this.inputdata));
-				console.log('新的',filteredArray);
-				   this.flowList = []; // 先清空列表
-				    
-				        this.flowList = filteredArray; // 重新赋值来触发更新
-				    
-					console.log(this.flowList);
+
+				// console.log('新的',filteredArray);
+				  this.$refs.uWaterfall.clear();
+				        this.flowList = this.goodslist.filter(obj => obj.title.includes(this.inputdata)||obj.shop.includes(this.inputdata));
+				 //    this.wf_show = false;
+					// this.wf_show = true
+					console.log("this.flowList:", this.flowList)
 				   // this.$nextTick(() => {
 				   //      this.$refs.uWaterfall.refresh(); // 假设 u-waterfall 提供了 refresh 方法用于强制刷新
 				   //  });
@@ -306,7 +312,7 @@
 			// 瀑布
 			addRandomData() {
 
-				this.flowList = this.list
+				this.flowList = this.goodslist
 
 			},
 			remove(id) {
@@ -322,10 +328,7 @@
 				console.log('开始发布');
 			}
 		},
-		onLoad() {
-			this.addRandomData();
-			this.tablist = indexStore.state.list
-		},
+
 	}
 </script>
 
