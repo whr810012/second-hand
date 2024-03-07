@@ -86,7 +86,8 @@ export default {
     return {
       autoplay: true,
       interval: 2000,
-      duration: 500
+      duration: 500,
+	  userInfo: {},
     };
   },
   async onLoad() {
@@ -119,25 +120,28 @@ export default {
   },
   methods: {
     async toBuy() {
-      uni.login({
-  provider: 'weixin',
-  success: function (loginRes) {
-    console.log(loginRes.authResult);
-    // 获取用户信息
-    uni.getUserInfo({
-      provider: 'weixin',
-      success: function (infoRes) {
-        console.log('用户昵称为：' + infoRes.userInfo.nickName);
-      }
-    });
-  }
-});
-      uni.reLaunch({
-          url: "/pages/home/home",
-          fail: e => {
-            console.log(e);
-          }
-        });
+		uni.getStorage({
+			key: 'username',
+			success: function (res) {
+				console.log(res.data);
+				uni.reLaunch({
+				    url: "/pages/home/home",
+				    fail: e => {
+				      console.log(e);
+				    }
+				  });
+			},
+			fail:function(err){
+				console.log(err);
+				uni.reLaunch({
+				    url: "/pages/addinfor/addinfor",
+				    fail: e => {
+				      console.log(e);
+				    }
+				  });
+			}
+		});
+
 
       // console.log("买买买");
       // await indexStore.dispatch("getUserPassStatus", {});
@@ -161,32 +165,33 @@ export default {
 
 
     },
-    // pay(res) {
-    //   // 仅作为示例，非真实参数信息。
-    //   uni.requestPayment({
-    //     provider: "wxpay",
-    //     timeStamp: res.timeStamp,
-    //     nonceStr: res.nonceStr,
-    //     package: res.package,
-    //     signType: res.signType,
-    //     paySign: res.paySign,
-    //     prepay_id: res.prepay_id,
-    //     success: async res => {
-    //       console.log("支付success:" + JSON.stringify(res));
-    //       await indexStore.dispatch("createPass");
-    //       uni.switchTab({
-    //         url: "/pages/map/map"
-    //       });
-    //     },
-    //     fail: err => {
-    //       console.log("支付fail:" + JSON.stringify(err));
-    //       uni.showToast({
-    //         icon: "none",
-    //         title: "已放弃支付"
-    //       });
-    //     }
-    //   });
-    // }
+	
+    pay(res) {
+      // 仅作为示例，非真实参数信息。
+      uni.requestPayment({
+        provider: "wxpay",
+        timeStamp: res.timeStamp,
+        nonceStr: res.nonceStr,
+        package: res.package,
+        signType: res.signType,
+        paySign: res.paySign,
+        prepay_id: res.prepay_id,
+        success: async res => {
+          console.log("支付success:" + JSON.stringify(res));
+          await indexStore.dispatch("createPass");
+          uni.switchTab({
+            url: "/pages/map/map"
+          });
+        },
+        fail: err => {
+          console.log("支付fail:" + JSON.stringify(err));
+          uni.showToast({
+            icon: "none",
+            title: "已放弃支付"
+          });
+        }
+      });
+    }
   }
 };
 </script>
