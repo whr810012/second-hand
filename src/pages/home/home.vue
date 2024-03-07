@@ -303,7 +303,7 @@
 					console.log('beforeee====',this.flowList);
 					this.$refs.uWaterfall.clear();
 					// console.log('开始搜索', this.inputdata);
-					let filteredArray = this.list.filter(obj => obj.title.includes(this.inputdata)||obj.shop.includes(this.inputdata));
+					let filteredArray = this.goodslist.filter(obj => obj.title.includes(this.inputdata)||obj.shop.includes(this.inputdata));
 					// console.log('新的',filteredArray);
 					console.log('befor====',this.flowList);
 					this.$nextTick(()=>{
@@ -374,7 +374,7 @@
 				}
 				if(this.value1 === 1 && this.searchname == ''){
 					this.$refs.uWaterfall.clear();
-					let filteredArray = this.list.filter(item=>item.class == classs)
+					let filteredArray = this.goodslist.filter(item=>item.class == classs)
 					this.$nextTick(()=>{
 						this.flowList = filteredArray; // 重新赋值来触发更新
 					})

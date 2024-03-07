@@ -5,8 +5,9 @@
 				<view class="addgoods_top_text">
 					上传照片
 				</view>
-				<u-upload ref="uUpload" :max-count="3" @on-uploaded="onUploaded" :auto-upload="false"
-					:action="action"></u-upload>
+				<!-- <img src="http://tmp/FBcUVoYgRv07cb764ec24278261909321f144dd5b5ed.png" alt=""> -->
+				<u-upload ref="uUpload" :show-tips="false" :max-count="3"  :auto-upload="false"
+					:action="action" @on-choose-complete="onchoosecomplete"></u-upload>
 			</view>
 			<view class="addgoods_top">
 				<view class="addgoods_top_class">
@@ -140,12 +141,25 @@ export default {
 			});
 		},
 		submit() {
-			this.$refs.uUpload.upload();
+		const	data = {
+			goodsname:this.goods_name,
+			goodsprice:this.goods_price,
+			goodsclass:this.classlist.label,
+			goodstitle:this.goods_value,
+			latitude:this.latitude,
+			longitude:this.longitude,
+			address:this.address,
+			goods_img:this.filesArr,
+			userid:uni.getStorageSync('userid'),
+			shopname:uni.getStorageSync('username')
+		}
+		console.log(data);
 		},
-		onUploaded(lists) {
+		onchoosecomplete(lists) {
 			this.filesArr = lists;
 			console.log('asddasd', this.filesArr);
 		},
+
 		confirm(e) {
 			console.log(e[0]);
 			this.classlist = e[0]
