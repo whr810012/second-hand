@@ -86,24 +86,25 @@ export default {
     return {
       autoplay: true,
       interval: 2000,
-      duration: 500
+      duration: 500,
+	  userInfo: {},
     };
   },
   async onLoad() {
     // this.toBuy()
-    await indexStore.dispatch("getUserPassStatus", {});
-    if (
-      indexStore.state.userPassStatus.msg === "Expired" ||
-      indexStore.state.userPassStatus.msg === "Valid"
-    ) {
-      console.log("进来就走");
-      uni.reLaunch({
-        url: "/pages/map/map",
-        fail: e => {
-          console.log(e);
-        }
-      });
-    }
+    // await indexStore.dispatch("getUserPassStatus", {});
+    // if (
+    //   indexStore.state.userPassStatus.msg === "Expired" ||
+    //   indexStore.state.userPassStatus.msg === "Valid"
+    // ) {
+    //   console.log("进来就走");
+    //   uni.reLaunch({
+    //     url: "/pages/map/map",
+    //     fail: e => {
+    //       console.log(e);
+    //     }
+    //   });
+    // }
   },
   onShareAppMessage(res) {
     if (res.from === "button") {
@@ -119,12 +120,28 @@ export default {
   },
   methods: {
     async toBuy() {
-      uni.reLaunch({
-          url: "/pages/home/home",
-          fail: e => {
-            console.log(e);
-          }
-        });
+		uni.getStorage({
+			key: 'username',
+			success: function (res) {
+				console.log(res.data);
+				uni.reLaunch({
+				    url: "/pages/home/home",
+				    fail: e => {
+				      console.log(e);
+				    }
+				  });
+			},
+			fail:function(err){
+				console.log(err);
+				uni.reLaunch({
+				    url: "/pages/addinfor/addinfor",
+				    fail: e => {
+				      console.log(e);
+				    }
+				  });
+			}
+		});
+
 
       // console.log("买买买");
       // await indexStore.dispatch("getUserPassStatus", {});
@@ -148,6 +165,7 @@ export default {
 
 
     },
+	
     pay(res) {
       // 仅作为示例，非真实参数信息。
       uni.requestPayment({

@@ -23,14 +23,14 @@
 		<!-- 筛选 -->
 		<view class="shaixuan">
 			<u-dropdown>
-				<u-dropdown-item v-model="value1" title="排序" :options="options1"></u-dropdown-item>
-				<u-dropdown-item height="450rpx" v-model="value2" title="分类" :options="options2"></u-dropdown-item>
+				<u-dropdown-item @change="startsort" v-model="value1" title="排序" :options="options1"></u-dropdown-item>
+				<u-dropdown-item @change="startclass" height="450rpx" v-model="value2" title="分类" :options="options2"></u-dropdown-item>
 			</u-dropdown>
 		</view>
 		<!-- 瀑布流 -->
 		<view class="pubu" v-if="wf_show">
 			<!-- <u-button @click="clear">清空列表</u-button> -->
-			<u-waterfall v-model="flowList" ref="uWaterfall">
+			<u-waterfall class="wrap-box" v-model="flowList" ref="uWaterfall">
 				<template v-slot:left="{leftList}">
 					<view class="demo-warter" v-for="(item, index) in leftList" :key="item.id"  @click="gobuy(item)">
 						<!-- 警告：微信小程序中需要hx2.8.11版本才支持在template中结合其他组件，比如下方的lazy-load组件 -->
@@ -83,6 +83,7 @@
 					</view>
 				</template>
 			</u-waterfall>
+			<!-- <u-loadmore bg-color="rgb(240, 240, 240)" :status="loadStatus" @loadmore="addRandomData"></u-loadmore> -->
 
 		</view>
 		<u-tabbar class="tabbar" :list="tablist" :mid-button="true" bg-color="rgba(255, 255, 255, 1)"
@@ -296,18 +297,97 @@
 					}
 				});
 			},
-			 startsearch() {
-				console.log('开始搜索', this.inputdata);
 
-				// console.log('新的',filteredArray);
-				  this.$refs.uWaterfall.clear();
-				        this.flowList = this.goodslist.filter(obj => obj.title.includes(this.inputdata)||obj.shop.includes(this.inputdata));
-				 //    this.wf_show = false;
-					// this.wf_show = true
-					console.log("this.flowList:", this.flowList)
-				   // this.$nextTick(() => {
-				   //      this.$refs.uWaterfall.refresh(); // 假设 u-waterfall 提供了 refresh 方法用于强制刷新
-				   //  });
+			startsearch() {
+				if(this.value1===1 && this.value2 === 1){
+					console.log('beforeee====',this.flowList);
+					this.$refs.uWaterfall.clear();
+					// console.log('开始搜索', this.inputdata);
+					let filteredArray = this.list.filter(obj => obj.title.includes(this.inputdata)||obj.shop.includes(this.inputdata));
+					// console.log('新的',filteredArray);
+					console.log('befor====',this.flowList);
+					this.$nextTick(()=>{
+						this.flowList = filteredArray; // 重新赋值来触发更新
+					})
+					
+				
+					console.log('over====',this.flowList);
+					return;
+				}
+				if(this.value1 !== 1 || this.value2 !== 1){
+					this.$refs.uWaterfall.clear();
+					console.log('开始搜索', this.inputdata);
+					let filteredArray = this.flowList.filter(obj => obj.title.includes(this.inputdata)||obj.shop.includes(this.inputdata));
+					console.log('新的',filteredArray);
+					
+					this.$nextTick(()=>{
+						this.flowList = filteredArray; // 重新赋值来触发更新
+					})
+					console.log(this.flowList);
+				}  
+			},
+			startsort(){
+				console.log(this.value1);
+				if(this.value1 === 1){
+					return
+				}
+				if(this.value1 === 2){
+					const arr = this.flowList
+					console.log('beforeee====',this.flowList);
+					this.$refs.uWaterfall.clear();
+					console.log('befor====',this.flowList);
+					let filteredArray = arr.sort((a, b) => a.price - b.price) // 重新赋值来触发更新
+					this.$nextTick(()=>{
+						this.flowList = filteredArray; // 重新赋值来触发更新
+					})
+					console.log('over====',this.flowList);
+					return
+				}
+				if(this.value1 === 3){
+					const arr = this.flowList
+					console.log('beforeee====',this.flowList);
+					this.$refs.uWaterfall.clear();
+					console.log('befor====',this.flowList);
+					let filteredArray = arr.sort((a, b) => b.price - a.price) // 重新赋值来触发更新
+					this.$nextTick(()=>{
+						this.flowList = filteredArray; // 重新赋值来触发更新
+					})
+					console.log('over====',this.flowList);
+					return
+				
+				}
+				
+			},
+			startclass(){
+				console.log(this.value2);
+				const classs = this.options2.filter(item=>item.value === this.value2)[0].label
+				console.log(classs);
+				if(this.value2 === 1){
+					if(this.flowList.length == this.list.length){
+						return
+					}else{
+						this.startsearch();
+						this.startsort();
+						return
+					}
+					
+				}
+				if(this.value1 === 1 && this.searchname == ''){
+					this.$refs.uWaterfall.clear();
+					let filteredArray = this.list.filter(item=>item.class == classs)
+					this.$nextTick(()=>{
+						this.flowList = filteredArray; // 重新赋值来触发更新
+					})
+					
+				}else{
+					const arr = this.flowList
+					this.$refs.uWaterfall.clear();
+					let filteredArray = arr.filter(item=>item.class == classs)
+					this.$nextTick(()=>{
+						this.flowList = filteredArray; // 重新赋值来触发更新
+					})
+				}
+
 			},
 			// 瀑布
 			addRandomData() {
@@ -450,7 +530,8 @@
 		.shaixuan {}
 
 		.pubu {
-			.demo-warter {
+			.wrap-box{
+				.demo-warter {
 				border-radius: 8px;
 				margin: 5px;
 				background-color: #ffffff;
@@ -515,6 +596,8 @@
 				color: $u-tips-color;
 				margin-top: 5px;
 			}
+			}
+
 		}
 	}
 </style>

@@ -105,6 +105,14 @@
 				"navigationBarTitleText" : "我的订单",
 				"enablePullDownRefresh" : false
 			}
+		},
+		{
+			"path" : "pages/addinfor/addinfor",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"enablePullDownRefresh" : false
+			}
 		}
 	],
 	"globalStyle": {
