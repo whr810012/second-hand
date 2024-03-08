@@ -207,6 +207,19 @@ export default {
         shopname
       ) {
         console.log(data);
+        uni.request({
+          url: "http://localhost:3000/addgoods",
+          method: "POST",
+          data: data,
+          success: (res) => {
+            console.log(res);
+            uni.showToast({
+              title: "发布成功",
+              icon: "none",
+            });
+          
+          }
+        })
       } else {
         if (userid && shopname) {
           uni.showToast({

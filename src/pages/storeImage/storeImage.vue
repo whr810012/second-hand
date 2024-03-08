@@ -177,7 +177,7 @@
 	/* 切换 */
 	.change-title {
 		position: fixed;
-		top: 184rpx;
+		top: 154rpx;
 		width: 100%;
 		height: 44rpx;
 		display: flex;

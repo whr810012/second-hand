@@ -27,19 +27,19 @@
             <view
               class="demo-warter"
               v-for="(item, index) in leftList"
-              :key="index"
+              :key="item.shopid"
             >
               <!-- 警告：微信小程序中需要hx2.8.11版本才支持在template中结合其他组件，比如下方的lazy-load组件 -->
               <u-lazy-load
                 threshold="-450"
                 border-radius="10"
-                :image="item.image"
+                :image="item.img[0]"
                 :index="index"
               ></u-lazy-load>
               <view class="demo-title">
-                {{ item.title }}
+                {{ item.goodsname }}
               </view>
-              <view class="demo-price"> {{ item.price }}元 </view>
+              <view class="demo-price"> {{ item.shopprice }}元 </view>
               <view class="demo-tag">
                 <view class="demo-tag-owner"> 自营 </view>
                 <view class="demo-tag-text"> 放心购 </view>
@@ -52,7 +52,7 @@
                 color="#fa3534"
                 size="34"
                 class="u-close"
-                @click="remove(item.id)"
+                @click="remove(item.shopid)"
               ></u-icon>
             </view>
           </template>
@@ -66,13 +66,13 @@
               <u-lazy-load
                 threshold="-450"
                 border-radius="10"
-                :image="item.image"
+                :image="item.img[0]"
                 :index="index"
               ></u-lazy-load>
               <view class="demo-title">
-                {{ item.title }}
+                {{ item.goodsname }}
               </view>
-              <view class="demo-price"> {{ item.price }}元 </view>
+              <view class="demo-price"> {{ item.shopprice }}元 </view>
               <view class="demo-tag">
                 <view class="demo-tag-owner"> 自营 </view>
                 <view class="demo-tag-text"> 放心购 </view>
@@ -85,7 +85,7 @@
                 color="#fa3534"
                 size="34"
                 class="u-close"
-                @click="remove(item.id)"
+                @click="remove(item.shopid)"
               ></u-icon>
             </view>
           </template>
@@ -110,6 +110,7 @@ import indexStore from "../../../store/index.js";
 export default {
   data() {
     return {
+      userid:'',
       tablist: "",
       src: "https://th.bing.com/th/id/R.fd81516a06ce33c15b194494272fa6e9?rik=XAfnJ6A9NFvAyA&riu=http%3a%2f%2fimg.touxiangwu.com%2fuploads%2fallimg%2f2022053117%2fivhiashhpu1.jpg&ehk=Yi2aDhWvd0rnBKl1xloJy8F1RfGd8%2bcC75k4ff8dVXk%3d&risl=&pid=ImgRaw&r=0",
       nicheng: "蛋蛋",
@@ -117,92 +118,32 @@ export default {
       // 瀑布
       loadStatus: "loadmore",
       flowList: [],
-      list: [
-        {
-          price: 35,
-          title: "北国风光，千里冰封，万里雪飘",
-          shop: "李白杜甫白居易旗舰店",
-          image:
-            "http://pic.sc.chinaz.com/Files/pic/pic9/202002/zzpic23327_s.jpg",
-        },
-        {
-          price: 75,
-          title: "望长城内外，惟余莽莽",
-          shop: "李白杜甫白居易旗舰店",
-          image:
-            "http://pic.sc.chinaz.com/Files/pic/pic9/202002/zzpic23325_s.jpg",
-        },
-        {
-          price: 385,
-          title: "大河上下，顿失滔滔",
-          shop: "李白杜甫白居易旗舰店",
-          image:
-            "http://pic2.sc.chinaz.com/Files/pic/pic9/202002/hpic2119_s.jpg",
-        },
-        {
-          price: 784,
-          title: "欲与天公试比高",
-          shop: "李白杜甫白居易旗舰店",
-          image:
-            "http://pic2.sc.chinaz.com/Files/pic/pic9/202002/zzpic23369_s.jpg",
-        },
-        {
-          price: 7891,
-          title: "须晴日，看红装素裹，分外妖娆",
-          shop: "李白杜甫白居易旗舰店",
-          image:
-            "http://pic2.sc.chinaz.com/Files/pic/pic9/202002/hpic2130_s.jpg",
-        },
-        {
-          price: 2341,
-          shop: "李白杜甫白居易旗舰店",
-          title: "江山如此多娇，引无数英雄竞折腰",
-          image:
-            "http://pic1.sc.chinaz.com/Files/pic/pic9/202002/zzpic23346_s.jpg",
-        },
-        {
-          price: 661,
-          shop: "李白杜甫白居易旗舰店",
-          title: "惜秦皇汉武，略输文采",
-          image:
-            "http://pic1.sc.chinaz.com/Files/pic/pic9/202002/zzpic23344_s.jpg",
-        },
-        {
-          price: 1654,
-          title: "唐宗宋祖，稍逊风骚",
-          shop: "李白杜甫白居易旗舰店",
-          image:
-            "http://pic1.sc.chinaz.com/Files/pic/pic9/202002/zzpic23343_s.jpg",
-        },
-        {
-          price: 1678,
-          title: "一代天骄，成吉思汗",
-          shop: "李白杜甫白居易旗舰店",
-          image:
-            "http://pic1.sc.chinaz.com/Files/pic/pic9/202002/zzpic23343_s.jpg",
-        },
-        {
-          price: 924,
-          title: "只识弯弓射大雕",
-          shop: "李白杜甫白居易旗舰店",
-          image:
-            "http://pic1.sc.chinaz.com/Files/pic/pic9/202002/zzpic23343_s.jpg",
-        },
-        {
-          price: 8243,
-          title: "俱往矣，数风流人物，还看今朝",
-          shop: "李白杜甫白居易旗舰店",
-          image:
-            "http://pic1.sc.chinaz.com/Files/pic/pic9/202002/zzpic23343_s.jpg",
-        },
-      ],
+      list: [],
     };
   },
-  methods: {
-    onLoad() {
+  onLoad() {
       this.tablist = indexStore.state.list;
       this.addRandomData();
+      this.getgoods();
     },
+  methods: {
+
+    getgoods() {
+			uni.request({
+				url: 'http://localhost:3000/getgoods',
+				method: 'GET',
+				success: (res) => {
+					console.log(res.data.data);
+          const goodslist = res.data.data;
+          this.userid = uni.getStorageSync('userid');
+					this.list = goodslist.filter(item=>item.userid == this.userid)
+					this.addRandomData()
+					// console.log(this.list);
+					// console.log(this.goodslist);
+					console.log(this.flowList);
+				}
+			})
+		},
     addRandomData() {
       this.flowList = this.list;
     },

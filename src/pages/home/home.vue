@@ -24,23 +24,24 @@
 		<view class="shaixuan">
 			<u-dropdown>
 				<u-dropdown-item @change="startsort" v-model="value1" title="排序" :options="options1"></u-dropdown-item>
-				<u-dropdown-item @change="startclass" height="450rpx" v-model="value2" title="分类" :options="options2"></u-dropdown-item>
+				<u-dropdown-item @change="startclass" height="450rpx" v-model="value2" title="分类"
+					:options="options2"></u-dropdown-item>
 			</u-dropdown>
 		</view>
 		<!-- 瀑布流 -->
 		<view class="pubu" v-if="wf_show">
 			<!-- <u-button @click="clear">清空列表</u-button> -->
 			<u-waterfall class="wrap-box" v-model="flowList" ref="uWaterfall">
-				<template v-slot:left="{leftList}">
-					<view class="demo-warter" v-for="(item, index) in leftList" :key="item.id"  @click="gobuy(item)">
+				<template v-slot:left="{ leftList }">
+					<view class="demo-warter" v-for="(item, index) in leftList" :key="item.shopid" @click="gobuy(item)">
 						<!-- 警告：微信小程序中需要hx2.8.11版本才支持在template中结合其他组件，比如下方的lazy-load组件 -->
-						<u-lazy-load threshold="-450" border-radius="10" :image="item.image[0]"
+						<u-lazy-load threshold="-450" border-radius="10" :image="item.img[0]"
 							:index="index"></u-lazy-load>
 						<view class="demo-title">
-							{{item.title}}
+							{{ item.goodsname }}
 						</view>
 						<view class="demo-price">
-							{{item.price}}元
+							{{ item.shopprice }}元
 						</view>
 						<view class="demo-tag">
 							<view class="demo-tag-owner">
@@ -51,21 +52,22 @@
 							</view>
 						</view>
 						<view class="demo-shop">
-							{{item.shop}}
+							{{ item.username }}
 						</view>
 						<!-- <u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close"
 							@click="remove(item.id)"></u-icon> -->
 					</view>
 				</template>
-				<template v-slot:right="{rightList}">
-					<view class="demo-warter" v-for="(item, index) in rightList" :key="item.id" @click="gobuy(item)">
-						<u-lazy-load threshold="-450" border-radius="10" :image="item.image[0]"
+				<template v-slot:right="{ rightList }">
+					<view class="demo-warter" v-for="(item, index) in rightList" :key="item.shopid"
+						@click="gobuy(item)">
+						<u-lazy-load threshold="-450" border-radius="10" :image="item.img[0]"
 							:index="index"></u-lazy-load>
 						<view class="demo-title">
-							{{item.title}}
+							{{ item.goodsname }}
 						</view>
 						<view class="demo-price">
-							{{item.price}}元
+							{{ item.shopprice }}元
 						</view>
 						<view class="demo-tag">
 							<view class="demo-tag-owner">
@@ -76,7 +78,7 @@
 							</view>
 						</view>
 						<view class="demo-shop">
-							{{item.shop}}
+							{{ item.username }}
 						</view>
 						<!-- <u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close"
 							@click="remove(item.id)"></u-icon> -->
@@ -87,451 +89,381 @@
 
 		</view>
 		<u-tabbar class="tabbar" :list="tablist" :mid-button="true" bg-color="rgba(255, 255, 255, 1)"
-			inactive-color="rgba(41, 44, 53, 0.30)" mid-button-size="150rpx" icon-size="50rpx" >
+			inactive-color="rgba(41, 44, 53, 0.30)" mid-button-size="150rpx" icon-size="50rpx">
 		</u-tabbar>
 	</div>
 
 </template>
 
 <script>
-	import indexStore from '../../../store/index.js'
-	export default {
-		data() {
-			return {
-				// 搜索内容
-				searchname:'',
-				// 轮播图数据
-				waraplist: [{
-						image: 'https://cdn.uviewui.com/uview/swiper/1.jpg',
-						title: '昨夜星辰昨夜风，画楼西畔桂堂东'
-					},
-					{
-						image: 'https://cdn.uviewui.com/uview/swiper/2.jpg',
-						title: '身无彩凤双飞翼，心有灵犀一点通'
-					},
-					{
-						image: 'https://cdn.uviewui.com/uview/swiper/3.jpg',
-						title: '谁念西风独自凉，萧萧黄叶闭疏窗，沉思往事立残阳'
-					},
+import indexStore from '../../../store/index.js'
+export default {
+	data() {
+		return {
+			// 搜索内容
+			searchname: '',
+			// 轮播图数据
+			waraplist: [{
+				image: 'https://cdn.uviewui.com/uview/swiper/1.jpg',
+				title: '昨夜星辰昨夜风，画楼西畔桂堂东'
+			},
+			{
+				image: 'https://cdn.uviewui.com/uview/swiper/2.jpg',
+				title: '身无彩凤双飞翼，心有灵犀一点通'
+			},
+			{
+				image: 'https://cdn.uviewui.com/uview/swiper/3.jpg',
+				title: '谁念西风独自凉，萧萧黄叶闭疏窗，沉思往事立残阳'
+			},
 
-				],
-				//
-				wf_show:true,
-				// 搜索框
-				inputdata: '',
-				// 下拉菜单
-				value1: 1,
-				value2: 1,
-				options1: [{
-						label: '默认排序',
-						value: 1,
-					},
-					{
-						label: '价格升序',
-						value: 2,
-					},
-					{
-						label: '价格降序',
-						value: 3,
-					}
-				],
-				options2: [{
-						label: '默认',
-						value: 1
-					},
-					{
-						label: '书籍',
-						value: 2,
-					},
-					{
-						label: '电子产品',
-						value: 3
-					},
-					{
-						label: '衣物',
-						value: 4
-					},
-					{
-						label: '化妆\护肤',
-						value: 5
-
-					}
-				],
-				// 瀑布
-				loadStatus: 'loadmore',
-				flowList: [],
-				goodslist: [{
-						id:1,
-						price: 35,
-						title: '北国风光，千里冰封，万里雪飘',
-						shop: '李白杜甫白居易旗舰店',
-						image: ['https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain',
-							'https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain'
-						],
-						address: '山东政法学院',
-						// weidu
-						longitude: 113,
-						latitude: 67,
-						class: '电子产品'
-					},
-					{
-						id:2,
-						price: 7,
-						title: '望长城内外，惟余莽莽',
-						shop: '李白杜甫白居易旗舰店',
-						image: ['https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain',
-							'https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain'
-						],
-						address: '山东政法学院',
-						// weidu
-						longitude: 113,
-						latitude: 67,
-						class: '书籍'
-					},
-					{
-						id:3,
-						price: 3,
-						title: '北国风光，千里冰封，万里雪飘',
-						shop: '李白杜甫白居易旗舰店',
-						image: ['https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain',
-							'https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain'
-						],
-						address: '山东政法学院',
-						// weidu
-						longitude: 113,
-						latitude: 67,
-						class: '电子产品'
-					},
-					{
-						id:4,
-						price: 115,
-						title: '望长城内外，惟余莽莽',
-						shop: '李白杜甫白居易旗舰店',
-						image: ['https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain',
-							'https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain'
-						],
-						address: '山东政法学院',
-						// weidu
-						longitude: 113,
-						latitude: 67,
-						class: '书籍'
-					},
-					{
-						id:5,
-						price: 235,
-						title: '北国风光，千里冰封，万里雪飘',
-						shop: '李白杜甫白居易旗舰店',
-						image: ['https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain',
-							'https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain'
-						],
-						address: '山东政法学院',
-						// weidu
-						longitude: 113,
-						latitude: 67,
-						class: '电子产品'
-					},
-					{
-						id:6,
-						price: 475,
-						title: '望长城内外，惟余莽莽',
-						shop: '李白杜甫白居易旗舰店',
-						image: ['https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain',
-							'https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain'
-						],
-						address: '山东政法学院',
-						// weidu
-						longitude: 113,
-						latitude: 67,
-						class: '书籍'
-					},
-					{
-						id:7,
-						price: 735,
-						title: '北国风光，千里冰封，万里雪飘',
-						shop: '李白杜甫白居易旗舰店',
-						image: ['https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain',
-							'https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain'
-						],
-						address: '山东政法学院',
-						// weidu
-						longitude: 113,
-						latitude: 67,
-						class: '电子产品'
-					},
-					{
-						id:8,
-						price: 975,
-						title: '望长城内外，惟余莽莽',
-						shop: '李白杜甫白居易旗舰店',
-						image: ['https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain',
-							'https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain'
-						],
-						address: '山东政法学院',
-						// weidu
-						longitude: 113,
-						latitude: 67,
-						class: '书籍'
-					},
-				],
-				tablist: ''
+			],
+			//
+			wf_show: true,
+			// 搜索框
+			inputdata: '',
+			// 下拉菜单
+			value1: 1,
+			value2: 1,
+			options1: [{
+				label: '默认排序',
+				value: 1,
+			},
+			{
+				label: '价格升序',
+				value: 2,
+			},
+			{
+				label: '价格降序',
+				value: 3,
 			}
-		},
-		onLoad() {
-			this.addRandomData();
-			this.tablist = indexStore.state.list
-		},
-		methods: {
-			gomap() {
-				uni.navigateTo({
-					url: "/pages/homemap/homemap",
-					fail: e => {
-						console.log(e);
-					}
-				});
+			],
+			options2: [{
+				label: '默认',
+				value: 1
 			},
-			goai() {
-				uni.navigateTo({
-					url: "/pages/ai/ai",
-					fail: e => {
-						console.log(e);
-					}
-				});
+			{
+				label: '书籍',
+				value: 2,
 			},
+			{
+				label: '电子产品',
+				value: 3
+			},
+			{
+				label: '衣物',
+				value: 4
+			},
+			{
+				label: '化妆\护肤',
+				value: 5
 
-			startsearch() {
-				if(this.value1===1 && this.value2 === 1){
-					console.log('beforeee====',this.flowList);
-					this.$refs.uWaterfall.clear();
-					// console.log('开始搜索', this.inputdata);
-					let filteredArray = this.goodslist.filter(obj => obj.title.includes(this.inputdata)||obj.shop.includes(this.inputdata));
-					// console.log('新的',filteredArray);
-					console.log('befor====',this.flowList);
-					this.$nextTick(()=>{
-						this.flowList = filteredArray; // 重新赋值来触发更新
-					})
-					
-				
-					console.log('over====',this.flowList);
-					return;
-				}
-				if(this.value1 !== 1 || this.value2 !== 1){
-					this.$refs.uWaterfall.clear();
-					console.log('开始搜索', this.inputdata);
-					let filteredArray = this.flowList.filter(obj => obj.title.includes(this.inputdata)||obj.shop.includes(this.inputdata));
-					console.log('新的',filteredArray);
-					
-					this.$nextTick(()=>{
-						this.flowList = filteredArray; // 重新赋值来触发更新
-					})
-					console.log(this.flowList);
-				}  
-			},
-			startsort(){
-				console.log(this.value1);
-				if(this.value1 === 1){
-					return
-				}
-				if(this.value1 === 2){
-					const arr = this.flowList
-					console.log('beforeee====',this.flowList);
-					this.$refs.uWaterfall.clear();
-					console.log('befor====',this.flowList);
-					let filteredArray = arr.sort((a, b) => a.price - b.price) // 重新赋值来触发更新
-					this.$nextTick(()=>{
-						this.flowList = filteredArray; // 重新赋值来触发更新
-					})
-					console.log('over====',this.flowList);
-					return
-				}
-				if(this.value1 === 3){
-					const arr = this.flowList
-					console.log('beforeee====',this.flowList);
-					this.$refs.uWaterfall.clear();
-					console.log('befor====',this.flowList);
-					let filteredArray = arr.sort((a, b) => b.price - a.price) // 重新赋值来触发更新
-					this.$nextTick(()=>{
-						this.flowList = filteredArray; // 重新赋值来触发更新
-					})
-					console.log('over====',this.flowList);
-					return
-				
-				}
-				
-			},
-			startclass(){
-				console.log(this.value2);
-				const classs = this.options2.filter(item=>item.value === this.value2)[0].label
-				console.log(classs);
-				if(this.value2 === 1){
-					if(this.flowList.length == this.list.length){
-						return
-					}else{
-						this.startsearch();
-						this.startsort();
-						return
-					}
-					
-				}
-				if(this.value1 === 1 && this.searchname == ''){
-					this.$refs.uWaterfall.clear();
-					let filteredArray = this.goodslist.filter(item=>item.class == classs)
-					this.$nextTick(()=>{
-						this.flowList = filteredArray; // 重新赋值来触发更新
-					})
-					
-				}else{
-					const arr = this.flowList
-					this.$refs.uWaterfall.clear();
-					let filteredArray = arr.filter(item=>item.class == classs)
-					this.$nextTick(()=>{
-						this.flowList = filteredArray; // 重新赋值来触发更新
-					})
-				}
-
-			},
+			}
+			],
 			// 瀑布
-			addRandomData() {
+			loadStatus: 'loadmore',
+			flowList: [],
+			goodslist: [{
+				shopid: 1,
+				shopprice: 35,
+				title: '北国风光，千里冰封，万里雪飘',
+				username: '李白杜甫白居易旗舰店',
+				img: ['https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain',
+					'https://th.bing.com/th/id/OIP.3hBgFtrc4-d0daxwmH7cnwHaE8?w=3000&h=2000&rs=1&pid=ImgDetMain'
+				],
+				address: '山东政法学院',
+				// weidu
+				longitude: 113,
+				latitude: 67,
+				class: '电子产品'
+			},
 
-				this.flowList = this.goodslist
+			],
+			tablist: ''
+		}
+	},
+	onLoad() {
+		this.addRandomData();
+		this.tablist = indexStore.state.list
+		this.getgoods()
+	},
+	// 每次进入该页面都执行
+	onPullDownRefresh() {
+		// console.log('123'); // 打印 "123"
+		this.getgoods()
 
-			},
-			remove(id) {
-				this.$refs.uWaterfall.remove(id);
-			},
-			gobuy(item) {
-				console.log(item);
-				uni.navigateTo({
-					url: `/pages/detail/detail?item=${encodeURIComponent(JSON.stringify(item))}`
-				});
-			},
-			clicktabbar() {
-				console.log('开始发布');
-			}
+		// 这里可以添加其他刷新逻辑
+
+		// 调用uni.stopPullDownRefresh()方法停止下拉刷新的状态
+		uni.stopPullDownRefresh();
+	},
+	// 下拉刷新的时候执行
+
+	methods: {
+		getgoods() {
+			uni.request({
+				url: 'http://localhost:3000/getgoods',
+				method: 'GET',
+				success: (res) => {
+					console.log(res.data.data);
+					this.goodslist = res.data.data
+					this.addRandomData()
+					// console.log(this.list);
+					console.log(this.goodslist);
+					console.log(this.flowList);
+				}
+			})
+		},
+		gomap() {
+			uni.navigateTo({
+				url: "/pages/homemap/homemap",
+				fail: e => {
+					console.log(e);
+				}
+			});
+		},
+		goai() {
+			uni.navigateTo({
+				url: "/pages/ai/ai",
+				fail: e => {
+					console.log(e);
+				}
+			});
 		},
 
-	}
+		startsearch() {
+			if (this.value1 === 1 && this.value2 === 1) {
+				console.log('beforeee====', this.flowList);
+				this.$refs.uWaterfall.clear();
+				// console.log('开始搜索', this.inputdata);
+				let filteredArray = this.goodslist.filter(obj => obj.title.includes(this.inputdata) || obj.goodsname.includes(this.inputdata));
+				// console.log('新的',filteredArray);
+				console.log('befor====', this.flowList);
+				this.$nextTick(() => {
+					this.flowList = filteredArray; // 重新赋值来触发更新
+				})
+
+
+				console.log('over====', this.flowList);
+				return;
+			}
+			if (this.value1 !== 1 || this.value2 !== 1) {
+				this.$refs.uWaterfall.clear();
+				console.log('开始搜索', this.inputdata);
+				let filteredArray = this.flowList.filter(obj => obj.title.includes(this.inputdata) || obj.goodsname.includes(this.inputdata));
+				console.log('新的', filteredArray);
+
+				this.$nextTick(() => {
+					this.flowList = filteredArray; // 重新赋值来触发更新
+				})
+				console.log(this.flowList);
+			}
+		},
+		startsort() {
+			console.log(this.value1);
+			if (this.value1 === 1) {
+				return
+			}
+			if (this.value1 === 2) {
+				const arr = this.flowList
+				console.log('beforeee====', this.flowList);
+				this.$refs.uWaterfall.clear();
+				console.log('befor====', this.flowList);
+				let filteredArray = arr.sort((a, b) => a.shopprice - b.shopprice) // 重新赋值来触发更新
+				this.$nextTick(() => {
+					this.flowList = filteredArray; // 重新赋值来触发更新
+				})
+				console.log('over====', this.flowList);
+				return
+			}
+			if (this.value1 === 3) {
+				const arr = this.flowList
+				console.log('beforeee====', this.flowList);
+				this.$refs.uWaterfall.clear();
+				console.log('befor====', this.flowList);
+				let filteredArray = arr.sort((a, b) => b.shopprice - a.shopprice) // 重新赋值来触发更新
+				this.$nextTick(() => {
+					this.flowList = filteredArray; // 重新赋值来触发更新
+				})
+				console.log('over====', this.flowList);
+				return
+
+			}
+
+		},
+		startclass() {
+			console.log(this.value2);
+			const classs = this.options2.filter(item => item.value === this.value2)[0].label
+			console.log(classs);
+			if (this.value2 === 1) {
+				if (this.flowList == this.goodslist) {
+					return
+				} else {
+					this.startsearch();
+					this.startsort();
+					return
+				}
+
+			}
+			if (this.value1 === 1 && this.searchname == '') {
+				this.$refs.uWaterfall.clear();
+				let filteredArray = this.goodslist.filter(item => item.class == classs)
+				this.$nextTick(() => {
+					this.flowList = filteredArray; // 重新赋值来触发更新
+				})
+
+			} else {
+				const arr = this.flowList
+				this.$refs.uWaterfall.clear();
+				let filteredArray = arr.filter(item => item.class == classs)
+				this.$nextTick(() => {
+					this.flowList = filteredArray; // 重新赋值来触发更新
+				})
+			}
+
+		},
+		// 瀑布
+		addRandomData() {
+			this.$refs.uWaterfall.clear();
+			this.flowList = this.goodslist
+
+		},
+		remove(id) {
+			this.$refs.uWaterfall.remove(id);
+		},
+		gobuy(item) {
+			console.log(item);
+			uni.navigateTo({
+				url: `/pages/detail/detail?item=${encodeURIComponent(JSON.stringify(item))}`
+			});
+		},
+		clicktabbar() {
+			console.log('开始发布');
+		}
+	},
+
+}
 </script>
 
 <style lang="scss" scoped>
-	.home_box {
-		width: 100%;
-		height: 100vh;
-		background-color: #f5f5f5;
-		overflow-y: scroll;
+.home_box {
+	width: 100%;
+	height: 100vh;
+	background-color: #f5f5f5;
+	overflow-y: scroll;
 
-		.newadd {
+	.newadd {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 70rpx;
+		background: rgba(164, 169, 255, 0.5);
+
+		// background-color: 
+		color: rgba(255, 255, 255, 0.5);
+		text-shadow: 0px 1px 0px #B24949;
+		font-family: FZChaoCuHei-M10S;
+		font-size: 20px;
+		font-style: normal;
+		font-weight: 600;
+		line-height: normal;
+		letter-spacing: 0.311px;
+		text-align: center;
+		-webkit-text-stroke: 1px rgba(255, 255, 255, 0.90);
+		/*文字描边*/
+		-webkit-text-fill-color: transparent;
+	}
+
+	.wrap {
+		padding: 40rpx;
+	}
+
+	.home_top_box {
+		margin-top: 40rpx;
+		// width: 100%;
+		height: 200rpx;
+		// background-color: antiquewhite;
+		display: flex;
+		justify-content: space-around;
+		border: 2px solid #B24949;
+		margin-left: 10rpx;
+		margin-right: 10rpx;
+		border-radius: 20rpx;
+		background-color: aliceblue;
+
+		.home_topleft_box {
+			margin-top: 10rpx;
+			margin-bottom: 10rpx;
+			padding: 1px;
+			width: 45%;
+			// height: 100%;
+			background-color: aqua;
+			border-radius: 30rpx;
+			background-image: url('../../static/home/aibg.jpg');
+			background-size: 100% 100%;
+			// background-size: cover;
+			background-repeat: no-repeat;
+			border: 1px solid #000;
+		}
+
+		.home_topright_box {
+			margin-top: 10rpx;
+			margin-bottom: 10rpx;
+			padding: 1px;
+			width: 45%;
+			// height: 100%;
+			background-color: aqua;
+			border-radius: 30rpx;
+			background-image: url('../../static/map.png');
+			background-size: 100% 100%;
+			// background-size: cover;
+			background-repeat: no-repeat;
+			border: 1px solid #000;
+		}
+	}
+
+	.input_box {
+		margin-top: 20rpx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 60rpx;
+
+		.search_input_box {
+			width: 80%;
+			height: 100%;
+			margin-left: 20rpx;
+			border-radius: 30rpx;
+			border: 1px solid #000;
+
+			.search_input {
+				margin-left: 20rpx;
+				line-height: 100%;
+				height: 100%;
+			}
+		}
+
+		.button_input {
+			height: 100%;
+			// height: 12.5px;
+			width: 20%;
+			margin-left: 20rpx;
+			margin-right: 20rpx;
 			display: flex;
-			align-items: center;
 			justify-content: center;
-			height: 70rpx;
-			background: rgba(164, 169, 255, 0.5);
-
-			// background-color: 
-			color: rgba(255, 255, 255, 0.5);
-			text-shadow: 0px 1px 0px #B24949;
-			font-family: FZChaoCuHei-M10S;
-			font-size: 20px;
-			font-style: normal;
-			font-weight: 600;
-			line-height: normal;
-			letter-spacing: 0.311px;
-			text-align: center;
-			-webkit-text-stroke: 1px rgba(255, 255, 255, 0.90);
-			/*文字描边*/
-			-webkit-text-fill-color: transparent;
-		}
-
-		.wrap {
-			padding: 40rpx;
-		}
-
-		.home_top_box {
-			margin-top: 40rpx;
-			// width: 100%;
-			height: 200rpx;
-			// background-color: antiquewhite;
-			display: flex;
-			justify-content: space-around;
-			border: 2px solid #B24949;
-			margin-left: 10rpx;
-			margin-right: 10rpx;
+			align-items: center;
+			// border: 1px solid #000;
 			border-radius: 20rpx;
-			background-color: aliceblue;
-
-			.home_topleft_box {
-				margin-top: 10rpx;
-				margin-bottom: 10rpx;
-				padding: 1px;
-				width: 45%;
-				// height: 100%;
-				background-color: aqua;
-				border-radius: 30rpx;
-				background-image: url('../../static/home/aibg.jpg');
-				background-size: 100% 100%;
-				// background-size: cover;
-				background-repeat: no-repeat;
-				border: 1px solid #000;
-			}
-
-			.home_topright_box {
-				margin-top: 10rpx;
-				margin-bottom: 10rpx;
-				padding: 1px;
-				width: 45%;
-				// height: 100%;
-				background-color: aqua;
-				border-radius: 30rpx;
-				background-image: url('../../static/map.png');
-				background-size: 100% 100%;
-				// background-size: cover;
-				background-repeat: no-repeat;
-				border: 1px solid #000;
-			}
+			background: #B24949;
+			color: #FFFEFE;
+			// line-height: 60rpx;
 		}
+	}
 
-		.input_box {
-			margin-top: 20rpx;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 60rpx;
+	.shaixuan {}
 
-			.search_input_box {
-				width: 80%;
-				height: 100%;
-				margin-left: 20rpx;
-				border-radius: 30rpx;
-				border: 1px solid #000;
-
-				.search_input {
-					margin-left: 20rpx;
-					line-height: 100%;
-					height: 100%;
-				}
-			}
-
-			.button_input {
-				height: 100%;
-				// height: 12.5px;
-				width: 20%;
-				margin-left: 20rpx;
-				margin-right: 20rpx;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				// border: 1px solid #000;
-				border-radius: 20rpx;
-				background: #B24949;
-				color: #FFFEFE;
-				// line-height: 60rpx;
-			}
-		}
-
-		.shaixuan {}
-
-		.pubu {
-			.wrap-box{
-				.demo-warter {
+	.pubu {
+		.wrap-box {
+			.demo-warter {
 				border-radius: 8px;
 				margin: 5px;
 				background-color: #ffffff;
@@ -596,8 +528,8 @@
 				color: $u-tips-color;
 				margin-top: 5px;
 			}
-			}
-
 		}
+
 	}
+}
 </style>
