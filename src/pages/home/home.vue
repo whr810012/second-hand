@@ -87,7 +87,7 @@
 
 		</view>
 		<u-tabbar class="tabbar" :list="tablist" :mid-button="true" bg-color="rgba(255, 255, 255, 1)"
-			inactive-color="rgba(41, 44, 53, 0.30)" mid-button-size="150rpx" icon-size="50rpx" @change="clicktabbar">
+			inactive-color="rgba(41, 44, 53, 0.30)" mid-button-size="150rpx" icon-size="50rpx" >
 		</u-tabbar>
 	</div>
 

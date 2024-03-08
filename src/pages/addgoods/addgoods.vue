@@ -89,7 +89,7 @@
         inactive-color="rgba(41, 44, 53, 0.30)"
         mid-button-size="150rpx"
         icon-size="48rpx"
-        @change="clicktabbar"
+        
       >
       </u-tabbar>
     </view>
