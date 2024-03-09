@@ -180,8 +180,8 @@
 				})
 			},
 			 opentime() {
-				console.log(this.goodslist);
-				console.log(this.overtime);
+				// console.log(this.goodslist);
+				// console.log(this.overtime);
 				if (!this.overtime) {
 					console.log('请先选择交易时间');
 					this.$refs.uToast.show({
@@ -191,6 +191,21 @@
 					})
 				} else {
 					console.log('达成交易');
+					console.log(this.overtime);
+					console.log(this.shopdetail.shopid);
+					const userid = uni.getStorageSync('userid')
+					uni.request({
+					  url:'http://localhost:3000/addover',
+					  method:'POST',
+					  data:{
+					      shopid:this.shopdetail.shopid,
+					      overtime:this.overtime,
+						  buyid:userid,
+					  },
+					  success:(res)=>{
+					      console.log(res.data);
+					  }
+					})
 					 this.$refs.uToast.show({
 						title: '交易已达成~',
 						type: 'success',

@@ -324,8 +324,9 @@ export default {
 		// 瀑布
 		addRandomData() {
 			this.$refs.uWaterfall.clear();
+			this.$nextTick(() => {
 			this.flowList = this.goodslist
-
+			})
 		},
 		remove(id) {
 			this.$refs.uWaterfall.remove(id);
