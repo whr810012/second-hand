@@ -4,24 +4,14 @@
       <view class="addgoods_top">
         <view class="addgoods_top_text"> 上传照片 </view>
         <!-- <img src="http://tmp/FBcUVoYgRv07cb764ec24278261909321f144dd5b5ed.png" alt=""> -->
-        <u-upload
-          ref="uUpload"
-          :show-tips="false"
-          :max-count="3"
-          :auto-upload="false"
-          :action="action"
-          @on-choose-complete="onchoosecomplete"
-        ></u-upload>
+        <u-upload ref="uUpload" :show-tips="false" :max-count="3" :auto-upload="false" :action="action"
+          @on-choose-complete="onchoosecomplete"></u-upload>
       </view>
       <view class="addgoods_top">
         <view class="addgoods_top_class">
           <view class="top_class_text">名称：</view>
           <view class="top_class_bottom">
-            <u-input
-              v-model="goods_name"
-              input-align="center"
-              placeholder="请输入商品名称"
-            />
+            <u-input v-model="goods_name" input-align="center" placeholder="请输入商品名称" />
           </view>
         </view>
       </view>
@@ -30,14 +20,8 @@
         <view class="addgoods_top_class">
           <view class="top_class_text"> 分类： </view>
           <view class="top_class_bottom" @click="show = true">
-            <u-input
-              v-model="classlist.label"
-              :type="text"
-              :border="true"
-              input-align="center"
-              disabled="fasle"
-			  @click="show = true"
-            />
+            <u-input v-model="classlist.label" :type="text" :border="true" input-align="center" disabled="fasle"
+              @click="show = true" />
           </view>
         </view>
         <u-select v-model="show" :list="list" @confirm="confirm"></u-select>
@@ -47,12 +31,7 @@
           <view class="top_class_text"> 价格： </view>
           <view class="top_class_bottom" @click="priceshow = true">
             ￥{{ goods_price || "0.00" }}
-            <u-keyboard
-              mode="number"
-              @change="valChange"
-              @backspace="backspace"
-              v-model="priceshow"
-            ></u-keyboard>
+            <u-keyboard mode="number" @change="valChange" @backspace="backspace" v-model="priceshow"></u-keyboard>
             <!-- <u-button >打开</u-button> -->
           </view>
         </view>
@@ -61,13 +40,7 @@
         <view class="addgoods_top_value">
           <view class="top_class_text"> 商品描述： </view>
           <view class="top_class_bottom">
-            <u-input
-              v-model="goods_value"
-              type="textarea"
-              :border="true"
-              input-align="left"
-              placeholder="请输入商品描述"
-            />
+            <u-input v-model="goods_value" type="textarea" :border="true" input-align="left" placeholder="请输入商品描述" />
           </view>
         </view>
       </view>
@@ -75,22 +48,25 @@
         <view class="addgoods_top_class">
           <view class="top_class_text" @click="checkaddres"> 交易位置： </view>
           <view class="top_class_text" @click="checkaddres">
-            {{ address }}
+            {{ address||'点击此处选择交易位置' }}
+          </view>
+        </view>
+      </view>
+      <view class="addgoods_top">
+        <view class="addgoods_top_class">
+          <view class="top_class_text"> 加入存放：
+            <p style="font-weight: 300;font-size: 12px;">加入后统一去存放点寻找交易物品</p>
+          </view>
+          <view class="top_class_text">
+            <u-switch v-model="checked" @change="swtichchange"></u-switch>
           </view>
         </view>
       </view>
       <u-button @click="submit">提交</u-button>
 
-      <u-tabbar
-        class="tabbar"
-        :list="tablist"
-        :mid-button="true"
-        bg-color="rgba(255, 255, 255, 1)"
-        inactive-color="rgba(41, 44, 53, 0.30)"
-        mid-button-size="150rpx"
-        icon-size="48rpx"
-        
-      >
+
+      <u-tabbar class="tabbar" :list="tablist" :mid-button="true" bg-color="rgba(255, 255, 255, 1)"
+        inactive-color="rgba(41, 44, 53, 0.30)" mid-button-size="150rpx" icon-size="48rpx">
       </u-tabbar>
     </view>
   </view>
@@ -101,6 +77,7 @@ import indexStore from "../../../store/index.js";
 export default {
   data() {
     return {
+      checked: false,
       type: "textarea",
       border: true,
       height: 100,
@@ -146,6 +123,16 @@ export default {
       ],
     };
   },
+  onPullDownRefresh() {
+    // console.log('123'); // 打印 "123"
+    this.$forceUpdate()
+
+    // 这里可以添加其他刷新逻辑
+
+    // 调用uni.stopPullDownRefresh()方法停止下拉刷新的状态
+    uni.stopPullDownRefresh();
+  },
+
   methods: {
     onLoad() {
       this.tablist = indexStore.state.list;
@@ -178,10 +165,19 @@ export default {
         },
       });
     },
+    swtichchange() {
+      console.log(this.checked);
+      if (this.checked) {
+        this.longitude = 117.086583
+        this.latitude = 36.664666
+        this.address = '交易存放点'
+      }
+    },
     submit() {
       const userid = uni.getStorageSync("userid");
       const shopname = uni.getStorageSync("username");
-	  const imglst = this.filesArr.map(item => item.url);
+      const imglst = this.filesArr.map(item => item.url);
+
       const data = {
         goodsname: this.goods_name,
         goodsprice: this.goods_price,
@@ -213,11 +209,31 @@ export default {
           data: data,
           success: (res) => {
             console.log(res);
-            uni.showToast({
-              title: "发布成功",
-              icon: "none",
-            });
-          
+            this.filesArr = []
+            this.goods_name = ''
+            this.goods_price = ''
+            this.classlist = {
+              value: "0",
+              label: "默认"
+            },
+            this.goods_value =''
+            this.address = ''
+            this.latitude = ''
+            this.longitude = ''
+            this.checked = false
+            this.$refs.uUpload.clear();
+            // this.filesArr = []
+              uni.showToast({
+                title: "发布成功",
+                icon: "none",
+              });
+            setTimeout(() => {
+              uni.switchTab({
+                url: '/pages/home/home'
+              });
+            }, 1500);
+
+
           }
         })
       } else {
@@ -302,6 +318,8 @@ export default {
       // width: 20%;
       font-size: 18px;
       font-weight: 500;
+      display: flex;
+      align-items: center;
     }
 
     .top_class_bottom {

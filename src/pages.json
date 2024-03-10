@@ -89,7 +89,7 @@
 			"style" : 
 			{
 				"navigationBarTitleText" : "商品发布",
-				"enablePullDownRefresh" : false
+				"enablePullDownRefresh" : true
 			}
 		},
 		{
