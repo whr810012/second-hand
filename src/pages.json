@@ -62,8 +62,11 @@
 			"style" : 
 			{
 				"navigationBarTitleText" : "主页",
-				"enablePullDownRefresh" : false
+				
+				"enablePullDownRefresh": true
 			}
+		
+			
 		},
 		{
 			"path" : "pages/homemap/homemap",
@@ -86,7 +89,7 @@
 			"style" : 
 			{
 				"navigationBarTitleText" : "商品发布",
-				"enablePullDownRefresh" : false
+				"enablePullDownRefresh" : true
 			}
 		},
 		{
@@ -103,7 +106,7 @@
 			"style" : 
 			{
 				"navigationBarTitleText" : "我的订单",
-				"enablePullDownRefresh" : false
+				"enablePullDownRefresh": true
 			}
 		},
 		{

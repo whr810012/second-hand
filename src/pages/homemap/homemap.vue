@@ -541,6 +541,34 @@
 							]
 						}
 					},
+					{
+						id: 13,
+						latitude: 36.664666,
+						longitude: 117.086583,
+						width: 30, // 设置标记点的宽度
+						height: 50, // 设置标记点的高度
+						iconPath: '../../static/markers/cai.svg',
+						label: {
+							content: '存放地',
+							fontSize: 17,
+							padding: 8,
+							textAlign: 'center',
+							borderWidth: 1,
+							borderColor: '#000',
+							bgColor: 'rgba(255,255,255,0.6)',
+							borderRadius: 20,
+						},
+						item: {
+							name: '存放地',
+							latitude: 36.664806,
+							longitude: 117.087062,
+							id: 13,
+							imageList: [
+								'https://ts1.cn.mm.bing.net/th/id/R-C.7c7c54688ff10ae20f80adb2a48084b2?rik=irX9m2ISZUiENg&riu=http%3a%2f%2fcampus.51job.com%2fyida2020%2fimg%2ftu31.png&ehk=asc9ixxc9uiFPLXB4QnMk1tqsyJ1k42f18SpIONF%2fsM%3d&risl=&pid=ImgRaw&r=0',
+
+							]
+						}
+					},
 				]
 			}
 		},

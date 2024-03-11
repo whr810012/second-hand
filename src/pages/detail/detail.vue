@@ -1,9 +1,9 @@
 <template>
 	<view class="detail">
-		<view class="detail-image" v-if="shopdetail.image">
+		<view class="detail-image" v-if="shopdetail.img">
 
 			<scroll-view class="scroll-view_H" scroll-x="true" scroll-left="0" enable-flex="true">
-				<view class="scroll-view-item_H" v-for="item in shopdetail.image" :key="item" @touchend="changeRight"
+				<view class="scroll-view-item_H" v-for="item in shopdetail.img" :key="item" @touchend="changeRight"
 					@click="seeImg">
 					<image class="scroll-img"
 						:src="item||'http://pic.sc.chinaz.com/Files/pic/pic9/202002/zzpic23327_s.jpg'" mode />
@@ -21,12 +21,12 @@
 		<!-- 店名+介绍+图片 -->
 		<view class="detail-name">
 			<view class="detail-name-left">
-				<view class="shopping-name">{{shopdetail.shop}}</view>
+				<view class="shopping-name">{{shopdetail.goodsname}}</view>
 				<scroll-view scroll-y class="shopping-detail">{{shopdetail.title}}</scroll-view>
 			</view>
 			<view class="detail-name-right">
 				<view class="shopping-image">
-					<image :src="shopdetail.img_url[0] || shopimg" />
+					<image :src="shopdetail.img[0] || shopimg" />
 				</view>
 
 			</view>
@@ -140,7 +140,7 @@
 			},
 			seeImg() {
 				uni.navigateTo({
-					url: `/pages/storeImage/storeImage?imglist=${encodeURIComponent(JSON.stringify(this.shopdetail.image))}&videolist=${encodeURIComponent(JSON.stringify(this.shopdetail.video_url))}`
+					url: `/pages/storeImage/storeImage?imglist=${encodeURIComponent(JSON.stringify(this.shopdetail.img))}&videolist=${encodeURIComponent(JSON.stringify(this.shopdetail.video_url))}`
 				})
 			},
 			goback() {
@@ -180,8 +180,8 @@
 				})
 			},
 			 opentime() {
-				console.log(this.goodslist);
-				console.log(this.overtime);
+				// console.log(this.goodslist);
+				// console.log(this.overtime);
 				if (!this.overtime) {
 					console.log('请先选择交易时间');
 					this.$refs.uToast.show({
@@ -191,6 +191,21 @@
 					})
 				} else {
 					console.log('达成交易');
+					console.log(this.overtime);
+					console.log(this.shopdetail.shopid);
+					const userid = uni.getStorageSync('userid')
+					uni.request({
+					  url:'http://localhost:3000/addover',
+					  method:'POST',
+					  data:{
+					      shopid:this.shopdetail.shopid,
+					      overtime:this.overtime,
+						  buyid:userid,
+					  },
+					  success:(res)=>{
+					      console.log(res.data);
+					  }
+					})
 					 this.$refs.uToast.show({
 						title: '交易已达成~',
 						type: 'success',
@@ -210,8 +225,8 @@
 			// console.log(option.item);
 			console.log("goods拿过来的", JSON.parse(decodeURIComponent(option.item)));
 
-			console.log((JSON.parse(decodeURIComponent(option.item))).image);
-			this.shopimg = (JSON.parse(decodeURIComponent(option.item))).image
+			console.log((JSON.parse(decodeURIComponent(option.item))).img);
+			this.shopimg = (JSON.parse(decodeURIComponent(option.item))).img
 			console.log(this.shopimg);
 			// 获取当前经纬度
 			await this.getUserLocation()
@@ -226,7 +241,7 @@
 			// 		console.log("相差距离", this.distance);
 			// 	}
 			// })
-			console.log('.shop_id', option.item.shop_id);
+			console.log('.shop_id', option.item.goodsid);
 			// console.log('.chain_store_id',JSON.parse(decodeURIComponent(option.item)).chain_store_id);
 
 			// const shop_id = JSON.parse(decodeURIComponent(option.item)).shop_id
