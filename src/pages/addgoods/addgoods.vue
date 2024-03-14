@@ -140,10 +140,8 @@ export default {
     // 调用uni.stopPullDownRefresh()方法停止下拉刷新的状态
     uni.stopPullDownRefresh();
   },
+  onLoad() {
 
-  methods: {
-    onLoad() {
-      this.connectWebSocket()
       this.tablist = indexStore.state.list;
       const that = this;
       uni.chooseLocation({
@@ -159,6 +157,7 @@ export default {
         },
       });
     },
+  methods: {
     checkaddres() {
       const that = this;
       uni.chooseLocation({
@@ -186,7 +185,8 @@ export default {
       const aititle = '商品名称为'+this.goods_name+'的商品,'+'他的价格为'+this.goods_price+'元，'+'他的分类是'+this.classlist.label+',他的交易位置是'+this.address+',请为这件商品生成一段商品描述用于售卖'
 
       console.log(aititle);
-      this.sendQuestion(aititle)
+      const url = this.generateURL()
+      this.startsocket(url)
 
     },
      generateURL() {
@@ -224,102 +224,161 @@ export default {
       return url;
     },
 
-     connectWebSocket() {
-      const url = this.generateURL();
-      console.log(url);
-      this.socket = new WebSocket(url);
-
-      this.socket.onopen = function (event) {
-        console.log("连接成功");
-      };
-
-      this.socket.onmessage = function (event) {
-        const response = JSON.parse(event.data);
-        if (response.payload && response.payload.choices && response.payload.choices.text && response.payload.choices.text.length > 0) {
-          const text = response.payload.choices.text[0].content;
-          this.aiResponse.push(text);
-        } else {
-          console.error("服务器返回的数据格式不正确");
-          console.log(response);
+    startsocket(url){
+      const socketTask = uni.connectSocket({
+        url: url,
+        success(res) {
+          console.log('connectSocket success', res);
         }
-      };
-
-      this.socket.onclose = function (event) {
-        console.log("连接关闭");
-
-        // 在连接关闭后重新连接 WebSocket
-        console.log("正在尝试重新连接...");
-        this.connectWebSocket();
-
-        // 在连接关闭后将所有的 AI 回答拼接成一个字符串返回给用户
-        const aiResponseText = this.aiResponse.join(""); // 将回答数组拼接成一句话
-        const chatHistory = '';
-
-        if (aiResponseText === '') {
-          return;
-        } else {
-          console.log(aiResponseText);
-
-        }
-
-
-
-        this.aiResponse = []; // 清空回答数组
-        chatDiv.scrollTop = chatDiv.scrollHeight
-
-
-      };
-    },
-
-     sendQuestion(item) {
-      const userInput = item
-
-      // 将用户的问题添加到聊天历史中
-
-      const chatHistory = document.getElementById("chat-history");
-      if(userInput == ''){
-        return
-      }else{
-              chatHistory.innerHTML += `<li class="right">
-          <span>${userInput}</span>
-          <img src="https://tse2-mm.cn.bing.net/th/id/OIP-C.BQoqXfiYUKT7RJ1JLU5RbAHaJK?rs=1&pid=ImgDetMain" alt="">
-        </li>`
-
-        chatDiv.scrollTop = chatDiv.scrollHeight
-      }
-
-
-
-      // 检查 WebSocket 连接状态，如果已经关闭，就重新连接
-      if (this.socket.readyState !== WebSocket.OPEN) {
-        console.log("WebSocket 连接已关闭，正在尝试重新连接...");
-        connectWebSocket();
-      }
-
-      // 发送问题给服务器
-      this.socket.send(JSON.stringify({
-        header: {
-          app_id: "86a192cf"
+      });
+      socketTask.onOpen(() => {
+  console.log('WebSocket连接已打开！');
+      });
+      setTimeout(() => {
+        socketTask.send({
+        data: '你好',
+        success(){
+          console.log('发送成功');
         },
-        parameter: {
-          chat: {
-            domain: "generalv3",
-            temperature: 0.5,
-            max_tokens: 2048,
-          }
-        },
-        payload: {
-          message: {
-            text: [
-              { role: "user", content: userInput }
-            ]
-          }
-        }
-      }));
+        fail(error){
+        console.error('发送失败，错误信息：', error);
+    }
+        
+      });
+      }, 1000);
+  
+      socketTask.onMessage((message) => {
+        const messageData = JSON.parse(message.data);
+  console.log('Received message data:', messageData);
+      });
 
+      // socketTask.onClose((res) => {
+      //   console.log('WebSocket closed:', res);
+      // });
 
+      socketTask.onError((error) => {
+        console.error('WebSocket error:', error);
+      });
     },
+    
+//      connectWebSocket() {
+//       const url = this.generateURL();
+//       console.log(url);
 
+//       // 测试uniappsocket
+//       this.socket = uni.connectSocket({
+//         url:url
+//       })
+//       // this.socket = new WebSocket(url);
+
+//       this.socket.onopen = function (event) {
+//         console.log("连接成功");
+//       };
+
+//       this.socket.onmessage = function (event) {
+//         const response = JSON.parse(event.data);
+//         if (response.payload && response.payload.choices && response.payload.choices.text && response.payload.choices.text.length > 0) {
+//           const text = response.payload.choices.text[0].content;
+//           this.aiResponse.push(text);
+//         } else {
+//           console.error("服务器返回的数据格式不正确");
+//           console.log(response);
+//         }
+//       };
+
+//       this.socket.onclose = function (event) {
+//         console.log("连接关闭");
+
+//         // 在连接关闭后重新连接 WebSocket
+//         console.log("正在尝试重新连接...");
+//         this.connectWebSocket();
+
+//         // 在连接关闭后将所有的 AI 回答拼接成一个字符串返回给用户
+//         const aiResponseText = this.aiResponse.join(""); // 将回答数组拼接成一句话
+//         const chatHistory = '';
+
+//         if (aiResponseText === '') {
+//           return;
+//         } else {
+//           console.log(aiResponseText);
+
+//         }
+
+
+
+//         this.aiResponse = []; // 清空回答数组
+//         chatDiv.scrollTop = chatDiv.scrollHeight
+
+
+//       };
+//     },
+
+//      sendQuestion(item) {
+//       const userInput = item
+
+//       // 将用户的问题添加到聊天历史中
+
+
+
+
+//       // 检查 WebSocket 连接状态，如果已经关闭，就重新连接
+//       console.log('-====',this.socket.readyState);
+//       if (this.socket.readyState !== 1) {
+//         console.log("WebSocket 连接已关闭，正在尝试重新连接...");
+//         this.connectWebSocket();
+//       }
+
+//       // 发送问题给服务器
+//       // this.socket.send(JSON.stringify({
+//       //   header: {
+//       //     app_id: "86a192cf"
+//       //   },
+//       //   parameter: {
+//       //     chat: {
+//       //       domain: "generalv3",
+//       //       temperature: 0.5,
+//       //       max_tokens: 2048,
+//       //     }
+//       //   },
+//       //   payload: {
+//       //     message: {
+//       //       text: [
+//       //         { role: "user", content: userInput }
+//       //       ]
+//       //     }
+//       //   }
+//       // }));
+//       this.sendSocketMessage({
+//   header: {
+//     app_id: "86a192cf"
+//   },
+//   parameter: {
+//     chat: {
+//       domain: "generalv3",
+//       temperature: 0.5,
+//       max_tokens: 2048,
+//     }
+//   },
+//   payload: {
+//     message: {
+//       text: [
+//         { role: "user", content: userInput }
+//       ]
+//     }
+//   }
+// });
+
+
+//     },
+//     sendSocketMessage(msg) {
+//   if (true) {
+//     uni.sendSocketMessage({
+//       data: JSON.stringify(msg)
+//     });
+//   } else {
+//     socketMsgQueue.push(msg);
+//   }
+// },
 
 
 
