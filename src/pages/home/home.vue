@@ -26,6 +26,8 @@
 				<u-dropdown-item @change="startsort" v-model="value1" title="排序" :options="options1"></u-dropdown-item>
 				<u-dropdown-item @change="startclass" height="450rpx" v-model="value2" title="分类"
 					:options="options2"></u-dropdown-item>
+				<u-dropdown-item @change="changeaddress" v-model="value3" title="交易地点"
+					:options="options3"></u-dropdown-item>
 			</u-dropdown>
 		</view>
 		<!-- 瀑布流 -->
@@ -124,6 +126,7 @@ export default {
 			// 下拉菜单
 			value1: 1,
 			value2: 1,
+			value3: 1,
 			options1: [{
 				label: '默认排序',
 				value: 1,
@@ -158,6 +161,20 @@ export default {
 				value: 5
 
 			}
+			],
+			options3: [{
+				label: '全部',
+				value: 1
+			},
+			{
+				label: '交易存放点',
+				value: 2,
+			},
+			{
+				label: '自定义交易',
+				value: 3
+			},
+			
 			],
 			// 瀑布
 			loadStatus: 'loadmore',
@@ -231,7 +248,7 @@ export default {
 		},
 
 		startsearch() {
-			if (this.value1 === 1 && this.value2 === 1) {
+			if (this.value1 === 1 && this.value2 === 1&&this.value3 === 1) {
 				console.log('beforeee====', this.flowList);
 				this.$refs.uWaterfall.clear();
 				// console.log('开始搜索', this.inputdata);
@@ -246,7 +263,7 @@ export default {
 				console.log('over====', this.flowList);
 				return;
 			}
-			if (this.value1 !== 1 || this.value2 !== 1) {
+			if (this.value1 !== 1 || this.value2 !== 1||this.value3 !==1) {
 				this.$refs.uWaterfall.clear();
 				console.log('开始搜索', this.inputdata);
 				let filteredArray = this.flowList.filter(obj => obj.title.includes(this.inputdata) || obj.goodsname.includes(this.inputdata));
@@ -261,7 +278,11 @@ export default {
 		startsort() {
 			console.log(this.value1);
 			if (this.value1 === 1) {
-				return
+				this.$refs.uWaterfall.clear();
+				this.$nextTick(() => {
+					this.flowList = this.goodslist; // 重新赋值来触发更新
+				})
+
 			}
 			if (this.value1 === 2) {
 				const arr = this.flowList
@@ -320,6 +341,34 @@ export default {
 				})
 			}
 
+		},
+		changeaddress(){
+			this.searchname = ''
+			this.value1 = 1
+			this.value2 = 1
+			if(this.value3 === 1){
+				this.$refs.uWaterfall.clear();
+				this.$nextTick(() => {
+					this.flowList = this.goodslist
+				})
+				return
+			}
+			if(this.value3 === 2){
+				this.$refs.uWaterfall.clear();
+				const arr =this.goodslist.filter(item=>item.address === '交易存放点')
+				this.$nextTick(() => {
+					this.flowList = arr
+				})
+				return
+						}
+			if(this.value3 === 2){
+				this.$refs.uWaterfall.clear();
+				const arr =this.goodslist.filter(item=>item.address != '交易存放点')
+				this.$nextTick(() => {
+					this.flowList = arr
+				})
+				return
+						}
 		},
 		// 瀑布
 		addRandomData() {

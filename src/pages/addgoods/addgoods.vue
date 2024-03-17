@@ -40,7 +40,7 @@
         <view class="addgoods_top_value">
           <view class="top_class_text"> 商品描述： </view>
           <view class="top_class_bottom">
-            <u-input v-model="goods_value" type="textarea" :border="true" input-align="left" placeholder="请输入商品描述" />
+            <u-input v-model="goods_value" type="textarea" :maxlength="10000" :border="true" input-align="left" placeholder="请输入商品描述" />
           </view>
         </view>
       </view>
@@ -65,7 +65,7 @@
           </view>
         </view>
       </view>
-      <u-button @click="submit">提交</u-button>
+      <u-button style="margin-bottom: 50px;" @click="submit">提交</u-button>
 
 
       <u-tabbar class="tabbar" :list="tablist" :mid-button="true" bg-color="rgba(255, 255, 255, 1)"
@@ -79,15 +79,14 @@
 // https://blog.csdn.net/qq_36901092/article/details/130326103
 import CryptoJS from 'crypto-js';
 import indexStore from "../../../store/index.js";
-import {WebSocket} from 'isomorphic-ws';
-	import * as utf8 from "utf8"
-	import URL from 'url'
+	// import * as utf8 from "utf8"
+	// import URL from 'url'
   import * as base64 from "base-64"
 export default {
   data() {
     return {
 // ======================================
-TEXT: '你好，我的名字叫大王',
+TEXT: '',
 				// 地址必须填写，代表着大模型的版本号！！！！！！！！！！！！！！！！
 				httpUrl: "https://spark-api.xf-yun.com/v3.1/chat",
 				modelDomain: '', // V1.1-V3.5动态获取，高于以上版本手动指定
@@ -203,16 +202,21 @@ TEXT: '你好，我的名字叫大王',
       }
     },
     aititle(){
-      const aititle = '商品名称为'+this.goods_name+'的商品,'+'他的价格为'+this.goods_price+'元，'+'他的分类是'+this.classlist.label+',他的交易位置是'+this.address+',请为这件商品生成一段商品描述用于售卖'
-
+      const aititle = '商品名称为'+this.goods_name+'的商品,'+'他的价格为'+this.goods_price+'元，'+'他的分类是'+this.classlist.label+',他的交易位置是'+this.address+',请为这件二手商品生成一段商品描述用于售卖'
+      this.TEXT = aititle
+      this.tempResv = ''
+      this.goods_value = ''
       console.log(aititle);
-      const myUrl = this.getWebSocketUrl()
-      console.log(myUrl);
-      // this.startsocket(url)
-      this.tempRes = "";
+      // const myUrl = this.getWebSocketUrl()
+      this.getWebSocketUrl().then((resolvedUrl) => {
+  console.log('======================',resolvedUrl);
+  const myUrl = resolvedUrl
+  console.log('---------------',myUrl);
+        // this.startsocket(url)
+        this.tempRes = "";
 				// this.sparkResult = "";
 				let realThis = this;
-        realThis.socketTask = uni.connectSocket({
+        this.socketTask = uni.connectSocket({
 					//url: encodeURI(encodeURI(myUrl).replace(/\+/g, '%2B')),
 					url: myUrl,
 					method: 'GET',
@@ -224,10 +228,10 @@ TEXT: '你好，我的名字叫大王',
             console.log('err',err);
           }
 				})
-        // realThis.socketTask.onError((res) => {
-				// 	console.log("连接发生错误，请检查appid是否填写", res)
-				// })
-        console.log(realThis.socketTask,'==========');
+        realThis.socketTask.onError((res) => {
+					console.log("连接发生错误，请检查appid是否填写", res)
+				})
+        console.log(this.socketTask,'==========');
         realThis.socketTask.onOpen((res) => {
 					this.historyTextList.push({
 						"role": "user",
@@ -238,7 +242,7 @@ TEXT: '你好，我的名字叫大王',
 					console.log('open成功...')
 					let params = {
 						"header": {
-							"app_id": 'wx09c849e5050a4ad0',
+							"app_id": '86a192cf',
 							"uid": "aef9f963-7"
 						},
 						"parameter": {
@@ -266,17 +270,20 @@ TEXT: '你好，我的名字叫大王',
 					});
 				});
         realThis.socketTask.onMessage((res) => {
-					console.log('收到API返回的内容：', res.data);
+					// console.log('收到API返回的内容：', res.data);
 					let obj = JSON.parse(res.data)
 					// console.log("我打印的"+obj.payload);
 					let dataArray = obj.payload.choices.text;
 					for (let i = 0; i < dataArray.length; i++) {
 						realThis.sparkResult = realThis.sparkResult + dataArray[i].content
 						realThis.tempRes = realThis.tempRes + dataArray[i].content
+            console.log("我打印的"+realThis.tempRes);
+            this.goods_value = realThis.tempRes;
+            console.log(this.goods_value);
 					}
 					// realThis.sparkResult =realThis.sparkResult+ 
 					let temp = JSON.parse(res.data)
-					// console.log("0726",temp.header.code)
+					console.log("0726",temp.header.code)
 					if (temp.header.code !== 0) {
 						console.log(`${temp.header.code}:${temp.message}`);
 						realThis.socketTask.close({
@@ -314,9 +321,14 @@ TEXT: '你好，我的名字叫大王',
 						}
 					}
 				})
+        // 在这里可以继续处理 resolvedUrl，比如创建 WebSocket 连接等操作
+      }).catch((error) => {
+        console.error('获取 WebSocket URL 失败:', error);
+      });
+
       },
     			// 鉴权
-			getWebSocketUrl() {
+			 getWebSocketUrl() {
 				console.log(this.httpUrl)
 				var httpUrlHost = (this.httpUrl).substring(8, 28);
 				var httpUrlPath = (this.httpUrl).substring(28);
@@ -360,6 +372,19 @@ TEXT: '你好，我的名字叫大王',
 					resolve(url); // 主要是返回地址
 				});
 			},
+  //     async changeurl(){
+  //       const url = this.getWebSocketUrl()
+  //       // console.log(url,'=1=1=1=1=');
+  //       try {
+  //   const resolvedUrl = await url;
+  //   // resolvedUrl 是 Promise 解析后的实际 URL 字符串
+  //   console.log(resolvedUrl);
+  //         return
+  //   // 在这里可以继续处理 resolvedUrl，比如创建 WebSocket 连接等操作
+  // } catch (error) {
+  //   console.error('Promise 解析失败:', error);
+  // }
+  //     },    
      generateURL() {
       // 生成签名所需的参数
       const APIKey = '1398f259b3fec19a20e02d86aadb86eb';
@@ -668,6 +693,7 @@ TEXT: '你好，我的名字叫大王',
 <style scoped lang="scss">
 .main-box {
   background-color: #f5f5f5;
+  padding-bottom: 40px;
 }
 
 .main {
