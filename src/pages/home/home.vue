@@ -4,6 +4,9 @@
 		<view class="wrap">
 			<u-swiper :list="waraplist" :effect3d="true"></u-swiper>
 		</view>
+		<view @click="goadmin" v-if="admin" class="newadd" style="margin-bottom: 20rpx;">
+			管理中心
+		</view>
 		<view class="newadd">
 			趣味功能
 		</view>
@@ -102,6 +105,7 @@ import indexStore from '../../../store/index.js'
 export default {
 	data() {
 		return {
+			admin:uni.getStorageSync("admin"),
 			// 搜索内容
 			searchname: '',
 			// 轮播图数据
@@ -202,7 +206,11 @@ export default {
 		this.addRandomData();
 		this.tablist = indexStore.state.list
 		this.getgoods()
+		this.admin = uni.getStorageSync("admin")
+		console.log(this.admin);
 	},
+	// 计算属性
+	
 	// 每次进入该页面都执行
 	onPullDownRefresh() {
 		// console.log('123'); // 打印 "123"
@@ -388,6 +396,11 @@ export default {
 		},
 		clicktabbar() {
 			console.log('开始发布');
+		},
+		goadmin() {
+			uni.navigateTo({
+				url: `/pages/admin/admin`
+			});
 		}
 	},
 

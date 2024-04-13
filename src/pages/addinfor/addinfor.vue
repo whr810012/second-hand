@@ -44,7 +44,13 @@
 											console.log('success');
 										}
 									});
-									
+									uni.setStorage({
+										key: 'admin',
+										data: res.data.isadmin,
+										success: function () {
+											console.log('success');
+										}
+									});
 							        this.text = 'request success';
 							    }
 						 })
