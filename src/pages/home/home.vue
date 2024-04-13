@@ -105,7 +105,7 @@ import indexStore from '../../../store/index.js'
 export default {
 	data() {
 		return {
-			admin:uni.getStorageSync("admin"),
+			admin:'',
 			// 搜索内容
 			searchname: '',
 			// 轮播图数据
@@ -206,8 +206,13 @@ export default {
 		this.addRandomData();
 		this.tablist = indexStore.state.list
 		this.getgoods()
-		this.admin = uni.getStorageSync("admin")
+		this.admin = uni.getStorageSync('admin');
 		console.log(this.admin);
+	},
+	onShow(){
+		this.addRandomData();
+		this.getgoods();
+		this.admin = uni.getStorageSync('admin');
 	},
 	// 计算属性
 	
@@ -222,6 +227,12 @@ export default {
 		uni.stopPullDownRefresh();
 	},
 	// 下拉刷新的时候执行
+	// 计算属性
+	computed: {
+		// 计算属性
+
+	},
+
 
 	methods: {
 		getgoods() {

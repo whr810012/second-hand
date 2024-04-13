@@ -1,9 +1,12 @@
 <template>
 	<view class="pubu">
 		<u-subsection :list="list" @change="changecurrent"></u-subsection>
+		<view style="width: 100%;height:500rpx;display: flex;justify-content: center;align-items: center;" v-if="goodslist.length === 0">
+				暂无商品
+		</view>
 		<u-waterfall v-model="goodslist" ref="uWaterfall">
 			<template v-slot:left="{ leftList }">
-				<view class="demo-warter" v-for="(item, index) in leftList" :key="item.shopid">
+				<view class="demo-warter" v-for="(item, index) in leftList" :key="item.shopid" @click="look(item)">
 					<!-- 警告：微信小程序中需要hx2.8.11版本才支持在template中结合其他组件，比如下方的lazy-load组件 -->
 					<u-lazy-load threshold="-450" border-radius="10" :image="item.img[0]" :index="index"></u-lazy-load>
 					<view class="demo-title">
@@ -23,7 +26,7 @@
 			</template>
 
 			<template v-slot:right="{ rightList }">
-				<view class="demo-warter" v-for="(item, index) in rightList" :key="index">
+				<view class="demo-warter" v-for="(item, index) in rightList" :key="index" @click="look(item)">
 					<u-lazy-load threshold="-450" border-radius="10" :image="item.img[0]" :index="index"></u-lazy-load>
 					<view class="demo-title">
 						{{ item.goodsname }}
@@ -41,6 +44,20 @@
 				</view>
 			</template>
 		</u-waterfall>
+		<u-popup v-model="show" mode='center' closeable="true" width='700' border-radius="30">
+			<view style="font-size: 16px; padding: 20rpx;">{{title}}</view>
+			<view class="main" style="padding: 20rpx;">
+				<view style="display: flex;width: 100%;">
+					<img style="width: 20%;height: 100rpx;" v-for="imgitem in showdata.img" :src=imgitem alt="" />
+				</view>
+				<view style="margin-top: 20rpx;">商品名称：{{showdata.goodsname}}</view>
+				<view style="margin-top: 20rpx;">商品价格：{{showdata.shopprice}}</view>
+				<view style="margin-top: 20rpx;">商品分类：{{showdata.class}}</view>
+				<view style="margin-top: 20rpx;">商品描述：{{showdata.title}}</view>
+				<view style="margin-top: 20rpx;" v-if="showdata.time">交易时间：{{showdata.overtime}}</view>
+				<view style="margin-top: 20rpx;">交易地点：{{showdata.address}}</view>
+			</view>
+		</u-popup>
 	</view>
 </template>
 
@@ -57,10 +74,18 @@
 				],
 				current: 1,
 				goodslist: [],
-				overgoodslist: []
+				overgoodslist: [],
+				show:false,
+				showdata:{},
+				title:''
 			}
 		},
 		methods: {
+			look(item) {
+				this.showdata = item
+				this.show = true,
+				this.title = this.current ==0?'上架商品详情':'交易商品详情'
+			},
 			changecurrent(index) {
 				this.current = index
 				this.addRandomData()
@@ -97,7 +122,7 @@
 							this.addRandomData()
 						}
 					})
-				}else{
+				} else {
 					uni.request({
 						url: 'http://localhost:3000/deleteovergoods',
 						method: 'POST',
@@ -124,8 +149,16 @@
 
 			},
 		},
-		onLoad() {
-			this.addRandomData()
+		async onLoad() {
+			uni.request({
+				url: 'http://localhost:3000/getgoods',
+				method: 'GET',
+				success: (res) => {
+					console.log(res.data.data);
+					this.goodslist = res.data.data
+				}
+			})
+			console.log(this.goodslist);
 		},
 	}
 </script>

@@ -113,7 +113,7 @@ export default {
       userid:'',
       tablist: "",
       src: "https://th.bing.com/th/id/R.fd81516a06ce33c15b194494272fa6e9?rik=XAfnJ6A9NFvAyA&riu=http%3a%2f%2fimg.touxiangwu.com%2fuploads%2fallimg%2f2022053117%2fivhiashhpu1.jpg&ehk=Yi2aDhWvd0rnBKl1xloJy8F1RfGd8%2bcC75k4ff8dVXk%3d&risl=&pid=ImgRaw&r=0",
-      nicheng: "蛋蛋",
+      nicheng: "",
       phone: 19861427087,
       // 瀑布
       loadStatus: "loadmore",
@@ -125,7 +125,14 @@ export default {
       this.tablist = indexStore.state.list;
       this.addRandomData();
       this.getgoods();
+	  this.nicheng = uni.getStorageSync('username');
     },
+	onShow(){
+		this.addRandomData();
+		this.getgoods();
+		this.nicheng = uni.getStorageSync('username');
+					console.log(this.nicheng);
+	},
   methods: {
 
     getgoods() {
@@ -148,7 +155,17 @@ export default {
       this.flowList = this.list;
     },
     remove(id) {
-      this.$refs.uWaterfall.remove(id);
+     uni.request({
+     	url: 'http://localhost:3000/deletegoods',
+     	method: 'POST',
+     	data: {
+     		shopid: id
+     	},
+     	success: (res) => {
+			this.$refs.uWaterfall.clear()
+			this.getgoods()
+     	}
+     })
     },
     goorder() {
       console.log("跳转订单");

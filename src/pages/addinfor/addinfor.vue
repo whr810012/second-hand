@@ -17,7 +17,7 @@
 	export default {
 		data() {
 			return {
-				
+				 
 			};
 		},
 
@@ -51,6 +51,7 @@
 											console.log('success');
 										}
 									});
+									// this.$store.commit('changadmin', res.data.isadmin);
 							        this.text = 'request success';
 							    }
 						 })
