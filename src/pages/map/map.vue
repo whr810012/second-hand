@@ -31,7 +31,6 @@
 		space
 	} from '../../../utils/utils.js'
 	import * as _ from 'lodash'
-	import p_list from '../../../utils/polygon.js'
 	import {
 		CarOfWealth
 	} from '../../../utils/utils.js'

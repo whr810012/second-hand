@@ -1,16 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import {
-	getPois,
-	getUserPassStatus,
-	getAllUserPass,
-	createPass,
-	postGetProducts,
-	getQRCode,
-	createOrderPay,
-	getAllBus
-} from '../utils/api'
 
 Vue.use(Vuex)
 

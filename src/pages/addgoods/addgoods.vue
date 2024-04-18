@@ -44,23 +44,32 @@
           </view>
         </view>
       </view>
+      <view class="addgoods_top">
+        <view class="addgoods_top_value">
+          <view class="top_class_text"> +关键词: </view>
+          <view class="top_class_bottom">
+            <u-input v-model="goods_words" type="textarea" :maxlength="10000" :border="true" input-align="left" placeholder="如果您想使用一键生成商品描述，可在此处，添加关键词" />
+          </view>
+        </view>
+      </view>
       <view class="aititle">
         <view class="box" @click="aititle">一键生成商品描述</view>
       </view>
       <view class="addgoods_top">
         <view class="addgoods_top_class">
           <view class="top_class_text" @click="checkaddres"> 交易位置： </view>
-          <view class="top_class_text" @click="checkaddres">
+          <view style=" padding-right: 20rpx; padding-left: 10rpx;  font-size: 18px;  font-weight: 500; display: flex; align-items: center;" @click="checkaddres">
             {{ address||'点击此处选择交易位置' }}
           </view>
         </view>
       </view>
       <view class="addgoods_top">
         <view class="addgoods_top_class">
-          <view class="top_class_text"> 加入存放：
-            <p style="font-weight: 300;font-size: 12px;">加入后统一去存放点寻找交易物品</p>
+          <view class=""> 
+            <view class="top_class_text">加入存放：</view>
+            <p style="font-weight: 300;font-size: 12px; padding-left: 10px;">加入后统一去存放点寻找交易物品</p>
           </view>
-          <view class="top_class_text">
+          <view style="padding-right: 20px;">
             <u-switch v-model="checked" @change="swtichchange"></u-switch>
           </view>
         </view>
@@ -102,7 +111,7 @@ TEXT: '',
 
 
 
-      
+goods_words:'',
    socket :null,// 声明全局变量保存 WebSocket 对象
    aiResponse : [],// 声明一个数组保存 AI 的回答
       checked: false,
@@ -202,7 +211,10 @@ TEXT: '',
       }
     },
     aititle(){
-      const aititle = '商品名称为'+this.goods_name+'的商品,'+'他的价格为'+this.goods_price+'元，'+'他的分类是'+this.classlist.label+',他的交易位置是'+this.address+',请为这件二手商品生成一段商品描述用于售卖'
+      let aititle = '商品名称为'+this.goods_name+'的商品,'+'他的价格为'+this.goods_price+'元，'+'他的分类是'+this.classlist.label+',他的交易位置是'+this.address+',请为这件二手商品生成一段商品描述用于售卖'
+      if(this.goods_words){
+        aititle = aititle+'关键词为'+this.goods_words
+      }
       this.TEXT = aititle
       this.tempResv = ''
       this.goods_value = ''
@@ -725,7 +737,7 @@ TEXT: '',
     .top_class_text {
       padding-right: 20rpx;
       padding-left: 10rpx;
-      // width: 20%;
+      width: 200rpx;
       font-size: 18px;
       font-weight: 500;
       display: flex;

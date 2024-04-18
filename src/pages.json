@@ -32,13 +32,13 @@
 		{
 			"path": "pages/spot/spot",
 			"style": {
-				"navigationBarTitleText": "景点详情"
+				"navigationBarTitleText": "位置详情"
 			}
 		},
 		{
 			"path": "pages/detail/detail",
 			"style": {
-				"navigationBarTitleText": "店铺详情"
+				"navigationBarTitleText": "商品详情"
 			}
 		},
 		{
@@ -48,14 +48,6 @@
 				"navigationBarTextStyle": "white"
 			}
 
-		},
-		{
-			"path" : "pages/pay-history/pay-history",
-			"style" : 
-			{
-				"navigationBarTitleText" : "购卡记录",
-				"enablePullDownRefresh" : false
-			}
 		},
 		{
 			"path" : "pages/home/home",
@@ -72,7 +64,7 @@
 			"path" : "pages/homemap/homemap",
 			"style" : 
 			{
-				"navigationBarTitleText" : "",
+				"navigationBarTitleText" : "校园导航",
 				"enablePullDownRefresh" : false
 			}
 		},
@@ -80,7 +72,7 @@
 			"path" : "pages/ai/ai",
 			"style" : 
 			{
-				"navigationBarTitleText" : "",
+				"navigationBarTitleText" : " ",
 				"enablePullDownRefresh" : false
 			}
 		},
@@ -113,7 +105,7 @@
 			"path" : "pages/addinfor/addinfor",
 			"style" : 
 			{
-				"navigationBarTitleText" : "",
+				"navigationBarTitleText" : "填写信息",
 				"enablePullDownRefresh" : false
 			}
 		},
@@ -121,7 +113,7 @@
 			"path" : "pages/admin/admin",
 			"style" : 
 			{
-				"navigationBarTitleText" : "",
+				"navigationBarTitleText" : "管理中心",
 				"enablePullDownRefresh" : false
 			}
 		}
