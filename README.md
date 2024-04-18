@@ -20,3 +20,6 @@ yarn build
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### node-v
+node 14.18.0
