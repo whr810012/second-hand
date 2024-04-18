@@ -17,13 +17,6 @@
 			}
 		},
 		{
-			"path": "pages/car/car",
-			"style": {
-				"navigationBarTitleText": "uni-app",
-				"navigationStyle": "custom"
-			}
-		},
-		{
 			"path": "pages/goods/goods",
 			"style": {
 				"navigationBarTitleText": "全部商品"
