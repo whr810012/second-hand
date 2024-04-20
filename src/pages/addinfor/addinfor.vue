@@ -3,6 +3,7 @@
 		<div class="text-center">请确认您的个人信息</div>
 		<div class="form-item">
 			<input class="inp" name="nickname" type="nickname" placeholder="请输入昵称" :value='username' />
+			<!-- <input class="inp" name="nickname" type="text" placeholder="请输入昵称" :value="username" showNicknameAccessory="false" /> -->
 		</div>
 		<button class="submit-btn mt-2" form-type="submit" type="primary">
 			保存

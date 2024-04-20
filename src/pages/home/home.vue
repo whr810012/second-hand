@@ -149,7 +149,7 @@ export default {
 				value: 1
 			},
 			{
-				label: '书籍',
+				label: '书籍类',
 				value: 2,
 			},
 			{
@@ -157,11 +157,11 @@ export default {
 				value: 3
 			},
 			{
-				label: '衣物',
+				label: '衣物类',
 				value: 4
 			},
 			{
-				label: '化妆\护肤',
+				label: '食品类',
 				value: 5
 
 			}
@@ -382,7 +382,7 @@ export default {
 				})
 				return
 			}
-			if (this.value3 === 2) {
+			if (this.value3 === 3) {
 				this.$refs.uWaterfall.clear();
 				const arr = this.goodslist.filter(item => item.address != '交易存放点')
 				this.$nextTick(() => {
@@ -474,7 +474,7 @@ export default {
 			// height: 100%;
 			background-color: aqua;
 			border-radius: 30rpx;
-			background-image: url('../../static/home/aibg.jpg');
+			background-image: url('https://ceshiai-1317989680.cos.ap-nanjing.myqcloud.com/aibg.jpg?q-sign-algorithm=sha1&q-ak=AKID7p5z80vUlTjtlgS5oybiU_kpL7_1wU-use10prganIvuCXYSSBt1D-iqLBvsq3JK&q-sign-time=1713603612;1713607212&q-key-time=1713603612;1713607212&q-header-list=host&q-url-param-list=ci-process&q-signature=ff005750875298228aea7d5a055c4f82d5b5ea8f&x-cos-security-token=4GRYG41YNTqB2xetpRlRETzdBuXi3wHa6abb12956bfc63199b8d9a40a9408707u26ZXRAqmGTZp3i1VX9zxjKLLXbE9ALbVNGGetqrMm6QZK3-mtKFdOu0K90lHaTkYUYbDifwOBRKWpN9KJl77gSTcqscluz8WCDBW1Rs_qUIHDd2xDFh1k-b8GdwUlX76KNuNsWkJA8lEkNF4JxoNo7m1ouyTxP4RA0Zbypad_QTpujJgI9rJahPI4WCSncC&ci-process=originImage');
 			background-size: 100% 100%;
 			// background-size: cover;
 			background-repeat: no-repeat;
@@ -489,7 +489,7 @@ export default {
 			// height: 100%;
 			background-color: aqua;
 			border-radius: 30rpx;
-			background-image: url('../../static/map.png');
+			background-image: url('https://ceshiai-1317989680.cos.ap-nanjing.myqcloud.com/map.png?q-sign-algorithm=sha1&q-ak=AKIDmamx8x96XyCDSSPFZp1DC2jbi5JLZhOYp94J6PsuZmtHJm6Rqb6jAVFoi0LOGjxd&q-sign-time=1713603899;1713607499&q-key-time=1713603899;1713607499&q-header-list=host&q-url-param-list=ci-process&q-signature=0798e81a2fa4cedb996fe480772d58ebab591ed5&x-cos-security-token=4GRYG41YNTqB2xetpRlRETzdBuXi3wHa94757aaa4c198dd3ba4c6658131cf0f6u26ZXRAqmGTZp3i1VX9zxhJhfMbLNUejumusEa1L6s9YWh8BqzAiWqhqK6GxbORyfZ7y89D6Kjm5vcsVXONaFy3R-1Usq2D_cJSkdAiVudjCjVjcOpZI8prg_G0t1PLGD7l47tuPXS0H2qDSHS9blyFakdcPYieo1n-xX7KY661ZWaFNttJXJ7MLdMqNuAuZ&ci-process=originImage');
 			background-size: 100% 100%;
 			// background-size: cover;
 			background-repeat: no-repeat;

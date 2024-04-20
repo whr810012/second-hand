@@ -3,7 +3,7 @@
     <view class="myinfor">
       <!-- <u-avatar :src="src" mode="circle" :size="180"></u-avatar> -->
       <button class="avatar-wrapper" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
-        <image class="avatar" :src="src"></image>
+        <image class="avatar" :src="src||'https://th.bing.com/th/id/R.fd81516a06ce33c15b194494272fa6e9?rik=XAfnJ6A9NFvAyA&riu=http%3a%2f%2fimg.touxiangwu.com%2fuploads%2fallimg%2f2022053117%2fivhiashhpu1.jpg&ehk=Yi2aDhWvd0rnBKl1xloJy8F1RfGd8%2bcC75k4ff8dVXk%3d&risl=&pid=ImgRaw&r=0'"></image>
       </button>
       <view class="nihceng_phone">
         <view class="nicheng">昵称：{{ nicheng }}</view>
