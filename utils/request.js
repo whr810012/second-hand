@@ -2,7 +2,7 @@
 import { login } from '../utils/api'
 import { removeStorage } from './localstorage'
 
-// const BASE_URL = 'http://43.192.135.13:8888/api'
+const BASE_URL = 'http://localhost:3000'
 // const BASE_URL = 'https://aomen.tutu-ai.cn'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -11,9 +11,9 @@ export const request = (url, data, method = 'GET') => {
 		uni.request({
 			url: BASE_URL + url,
 			data,
-			header: {
-				authorization: uni.getStorageSync('token')
-			},
+			// header: {
+			// 	authorization: uni.getStorageSync('token')
+			// },
 			timeout: 100000,
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			method: method,
