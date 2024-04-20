@@ -105,7 +105,7 @@ import indexStore from '../../../store/index.js'
 export default {
 	data() {
 		return {
-			admin:'',
+			admin: false,
 			// 搜索内容
 			searchname: '',
 			// 轮播图数据
@@ -178,7 +178,7 @@ export default {
 				label: '自定义交易',
 				value: 3
 			},
-			
+
 			],
 			// 瀑布
 			loadStatus: 'loadmore',
@@ -206,16 +206,18 @@ export default {
 		this.addRandomData();
 		this.tablist = indexStore.state.list
 		this.getgoods()
-		this.admin = uni.getStorageSync('admin');
+		if (uni.getStorageSync('admin')) {
+			this.admin = uni.getStorageSync('admin');
+		}
 		console.log(this.admin);
 	},
-	onShow(){
+	onShow() {
 		this.addRandomData();
 		this.getgoods();
 		this.admin = uni.getStorageSync('admin');
 	},
 	// 计算属性
-	
+
 	// 每次进入该页面都执行
 	onPullDownRefresh() {
 		// console.log('123'); // 打印 "123"
@@ -267,7 +269,7 @@ export default {
 		},
 
 		startsearch() {
-			if (this.value1 === 1 && this.value2 === 1&&this.value3 === 1) {
+			if (this.value1 === 1 && this.value2 === 1 && this.value3 === 1) {
 				console.log('beforeee====', this.flowList);
 				this.$refs.uWaterfall.clear();
 				// console.log('开始搜索', this.inputdata);
@@ -282,7 +284,7 @@ export default {
 				console.log('over====', this.flowList);
 				return;
 			}
-			if (this.value1 !== 1 || this.value2 !== 1||this.value3 !==1) {
+			if (this.value1 !== 1 || this.value2 !== 1 || this.value3 !== 1) {
 				this.$refs.uWaterfall.clear();
 				console.log('开始搜索', this.inputdata);
 				let filteredArray = this.flowList.filter(obj => obj.title.includes(this.inputdata) || obj.goodsname.includes(this.inputdata));
@@ -361,39 +363,39 @@ export default {
 			}
 
 		},
-		changeaddress(){
+		changeaddress() {
 			this.searchname = ''
 			this.value1 = 1
 			this.value2 = 1
-			if(this.value3 === 1){
+			if (this.value3 === 1) {
 				this.$refs.uWaterfall.clear();
 				this.$nextTick(() => {
 					this.flowList = this.goodslist
 				})
 				return
 			}
-			if(this.value3 === 2){
+			if (this.value3 === 2) {
 				this.$refs.uWaterfall.clear();
-				const arr =this.goodslist.filter(item=>item.address === '交易存放点')
+				const arr = this.goodslist.filter(item => item.address === '交易存放点')
 				this.$nextTick(() => {
 					this.flowList = arr
 				})
 				return
-						}
-			if(this.value3 === 2){
+			}
+			if (this.value3 === 2) {
 				this.$refs.uWaterfall.clear();
-				const arr =this.goodslist.filter(item=>item.address != '交易存放点')
+				const arr = this.goodslist.filter(item => item.address != '交易存放点')
 				this.$nextTick(() => {
 					this.flowList = arr
 				})
 				return
-						}
+			}
 		},
 		// 瀑布
 		addRandomData() {
 			this.$refs.uWaterfall.clear();
 			this.$nextTick(() => {
-			this.flowList = this.goodslist
+				this.flowList = this.goodslist
 			})
 		},
 		remove(id) {

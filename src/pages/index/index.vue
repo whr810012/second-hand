@@ -31,15 +31,9 @@
     <view class="main">
 
       <view class="uni-margin-wrap">
-        <swiper
-          class="swiper"
-          circular
-          :autoplay="autoplay"
-          :interval="interval"
-          :duration="duration"
-        >
+        <swiper class="swiper" circular :autoplay="autoplay" :interval="interval" :duration="duration">
           <swiper-item class="swiper-item" v-for="i in 3" :key="i">
-            <image class="swiper-image" :src="`../../static/index/index_main${i+1}.png`" />
+            <image class="swiper-image" :src="`../../static/index/index_main${i + 1}.png`" />
           </swiper-item>
         </swiper>
       </view>
@@ -50,19 +44,19 @@
       <view class="foot-one">校园二手平台创新之处</view>
       <view>
         <scroll-view class="scroll-view_H" scroll-x="true" scroll-left="0">
-          <view class="foot-image scroll-view-item_H" >
+          <view class="foot-image scroll-view-item_H">
             <view class="foot_item_box">
-				<view class="aitext">AI设计</view>
-				<image src="../../static/index/ai-loading.gif"  alt="" />
-				<view class="aitext">增加AI自由问答</view>
-			</view>
+              <view class="aitext">AI设计</view>
+              <image src="../../static/index/ai-loading.gif" alt="" />
+              <view class="aitext">增加AI自由问答</view>
+            </view>
           </view>
-		  <view class="foot-image scroll-view-item_H" >
+          <view class="foot-image scroll-view-item_H">
             <view class="foot_item_box">
-				<view class="maptext">校园地图</view>
-				<image src="../../static/map.png"></image>
-				<view class="maptext">增加校园地图介绍</view>
-			</view>
+              <view class="maptext">校园地图</view>
+              <image src="../../static/map.png"></image>
+              <view class="maptext">增加校园地图介绍</view>
+            </view>
           </view>
 
         </scroll-view>
@@ -70,10 +64,10 @@
     </view>
     <!-- buy -->
     <view class="fixedButton">
-      <view class="btn-image"  mode @click="toBuy" >
-		<view class="color_view"></view>
-		<view class="btn" >开始使用</view>
-	  </view>
+      <view class="btn-image" mode @click="toBuy">
+        <view class="color_view"></view>
+        <view class="btn">开始使用</view>
+      </view>
     </view>
   </view>
 </template>
@@ -87,7 +81,7 @@ export default {
       autoplay: true,
       interval: 2000,
       duration: 500,
-	  userInfo: {},
+      userInfo: {},
     };
   },
   async onLoad() {
@@ -120,27 +114,27 @@ export default {
   },
   methods: {
     async toBuy() {
-		uni.getStorage({
-			key: 'username',
-			success: function (res) {
-				console.log(res.data);
-				uni.reLaunch({
-				    url: "/pages/home/home",
-				    fail: e => {
-				      console.log(e);
-				    }
-				  });
-			},
-			fail:function(err){
-				console.log(err);
-				uni.reLaunch({
-				    url: "/pages/addinfor/addinfor",
-				    fail: e => {
-				      console.log(e);
-				    }
-				  });
-			}
-		});
+      uni.getStorage({
+        key: 'username',
+        success: function (res) {
+          console.log(res.data);
+          uni.reLaunch({
+            url: "/pages/home/home",
+            fail: e => {
+              console.log(e);
+            }
+          });
+        },
+        fail: function (err) {
+          console.log(err);
+          uni.reLaunch({
+            url: "/pages/addinfor/addinfor",
+            fail: e => {
+              console.log(e);
+            }
+          });
+        }
+      });
 
 
       // console.log("买买买");
@@ -165,7 +159,7 @@ export default {
 
 
     },
-	
+
     pay(res) {
       // 仅作为示例，非真实参数信息。
       uni.requestPayment({
@@ -208,6 +202,7 @@ export default {
   width: 100%;
   //   background-color: red;
   position: relative;
+
   // padding-top: -500rpx;
   image {
     // margin-top: -126px;
@@ -223,16 +218,15 @@ export default {
     position: absolute;
     top: 600rpx;
     left: 0%;
+
     .head_top {
       z-index: 10;
       border-radius: 30px;
       //   background-color: #fff;
-      background: linear-gradient(
-        180deg,
-        #1c1429 0%,
-        #5f2c37 38.16%,
-        #1c1429 56.27%
-      );
+      background: linear-gradient(180deg,
+          #1c1429 0%,
+          #5f2c37 38.16%,
+          #1c1429 56.27%);
       // 背景色加透明度
       // background: rgba(28, 20, 41, 0.9);
       color: #fff;
@@ -246,6 +240,7 @@ export default {
 
       border-radius: 30px;
       box-shadow: 10px 8px 0px rgba($color: #000000, $alpha: 0.5);
+
       .head_top_text {
         text-align: center;
         color: #fffdfc;
@@ -260,11 +255,13 @@ export default {
         text-shadow: 4px 3px 3px #f5f5f5;
         margin-top: 10rpx;
       }
+
       .haochu {
         display: flex;
         margin-top: 40rpx;
         justify-content: space-around;
         align-items: center;
+
         .haochuitem {
           //   text-shadow: 1px 1px 1px #f5f5f5;
           font-family: FZCuHuoYi-M25S;
@@ -284,6 +281,7 @@ export default {
   width: 100%;
   position: relative;
   margin-top: 200rpx;
+
   /* 背景图 */
   .main-bg {
     // margin: -1rpx auto;
@@ -324,7 +322,7 @@ export default {
         .swiper-image {
           width: 100%;
           height: 100%;
-		  border-radius: 30px;
+          border-radius: 30px;
         }
       }
     }
@@ -337,28 +335,30 @@ export default {
   width: 100%;
   background: #1c1429;
   margin-top: 80px;
+
   // color: #fff;
   .foot-one {
     // background-color: #fff;
     padding-top: 50rpx;
     text-align: center;
-        color: #fffdfc;
-        text-shadow: 0px 3px 0px #075b8a;
-        font-family: FZCuHuoYi-M25S;
-        font-size: 18px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: normal;
-        letter-spacing: 0.311px;
-        // 文字阴影
-        text-shadow: 4px 3px 2px #f5f5f5;
-        margin-top: 10rpx;
+    color: #fffdfc;
+    text-shadow: 0px 3px 0px #075b8a;
+    font-family: FZCuHuoYi-M25S;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.311px;
+    // 文字阴影
+    text-shadow: 4px 3px 2px #f5f5f5;
+    margin-top: 10rpx;
   }
+
   .scroll-view_H {
-	
+
     margin: -4rpx auto;
-	margin-top: 10px;
-	// margin-bottom: 20px;
+    margin-top: 10px;
+    // margin-bottom: 20px;
     white-space: nowrap;
     width: 100%;
     height: 100%;
@@ -376,38 +376,46 @@ export default {
         height: 100%;
         width: 100%;
       }
-	  .foot_item_box{
-		height: 100%;
-		width: 100%;
-		border-radius: 30px;
-		border: 1px solid #d63535;
-		background-color: #fff;
-		image{
-			width: 100%;
-			height: calc(100% - 60px);
-				}
-				.aitext{
-					height: 30px;
-					width: 100%;
-					text-align: center;
-					line-height: 30px;
-					// color: #87e9ea;
-					font-size: 20px;
-					-webkit-text-stroke:1px #87e9ea;        /*文字描边*/
-		   -webkit-text-fill-color:transparent;    /*设置文字的填充颜色*/
 
-				}
-				.maptext{
-					height: 30px;
-					width: 100%;
-					text-align: center;
-					line-height: 30px;
-					color: #ffb405;
-					font-size: 20px;	
-					-webkit-text-stroke:1px #ffb405;        /*文字描边*/
-		   -webkit-text-fill-color:transparent;    /*设置文字的填充颜色*/
-				}
-	  }
+      .foot_item_box {
+        height: 100%;
+        width: 100%;
+        border-radius: 30px;
+        border: 1px solid #d63535;
+        background-color: #fff;
+
+        image {
+          width: 100%;
+          height: calc(100% - 60px);
+        }
+
+        .aitext {
+          height: 30px;
+          width: 100%;
+          text-align: center;
+          line-height: 30px;
+          // color: #87e9ea;
+          font-size: 20px;
+          -webkit-text-stroke: 1px #87e9ea;
+          /*文字描边*/
+          -webkit-text-fill-color: transparent;
+          /*设置文字的填充颜色*/
+
+        }
+
+        .maptext {
+          height: 30px;
+          width: 100%;
+          text-align: center;
+          line-height: 30px;
+          color: #ffb405;
+          font-size: 20px;
+          -webkit-text-stroke: 1px #ffb405;
+          /*文字描边*/
+          -webkit-text-fill-color: transparent;
+          /*设置文字的填充颜色*/
+        }
+      }
     }
   }
 }
@@ -423,33 +431,36 @@ export default {
   .btn-image {
     height: 200rpx;
     width: 100%;
-	.color_view{
-		width: 100%;
-		height: 50rpx;
-		background-color: rgb(7,91,138);
-	}
-	.btn{
-		// 渐变红棕色
 
-		height: 151rpx;
-		background: rgb(178,73,73);
+    .color_view {
+      width: 100%;
+      height: 50rpx;
+      background-color: rgb(7, 91, 138);
+    }
 
-		// background-color: 
-		color: rgba(255, 255, 255, 0.90);
-		text-shadow: 0px 1px 0px #B24949;
-		font-family: FZChaoCuHei-M10S;
-		font-size: 34px;
-		font-style: normal;
-		font-weight: 600;
-		line-height: normal;
-		letter-spacing: 0.311px;
-		text-align: center;
-		-webkit-text-stroke:1px rgba(255, 255, 255, 0.90);        /*文字描边*/
-		   -webkit-text-fill-color:transparent;  
-		   display: flex;
-		   align-items: center;
-		   justify-content: center;
-	}
+    .btn {
+      // 渐变红棕色
+
+      height: 151rpx;
+      background: rgb(178, 73, 73);
+
+      // background-color: 
+      color: rgba(255, 255, 255, 0.90);
+      text-shadow: 0px 1px 0px #B24949;
+      font-family: FZChaoCuHei-M10S;
+      font-size: 34px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+      letter-spacing: 0.311px;
+      text-align: center;
+      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.90);
+      /*文字描边*/
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 }
 </style>

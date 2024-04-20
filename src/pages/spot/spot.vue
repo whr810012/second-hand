@@ -44,14 +44,14 @@
 </template>
 
 <script>
-	import popup from '@/components/popup/popup.vue'
+	
 	import indexStore from '../../../store/index.js'
 	import {
 		space
 	} from '../../../utils/utils.js'
 	export default {
 		components: {
-			popup
+			
 		},
 		data() {
 			return {

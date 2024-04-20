@@ -40,7 +40,17 @@
         <view class="addgoods_top_value">
           <view class="top_class_text"> 商品描述： </view>
           <view class="top_class_bottom">
-            <u-input v-model="goods_value" type="textarea" :maxlength="10000" :border="true" input-align="left" placeholder="请输入商品描述" />
+            <u-input v-model="goods_value" type="textarea" :maxlength="10000" :border="true" input-align="left"
+              placeholder="请输入商品描述" />
+          </view>
+        </view>
+      </view>
+      <view class="addgoods_top">
+        <view class="addgoods_top_value">
+          <view class="top_class_text"> +关键词: </view>
+          <view class="top_class_bottom">
+            <u-input v-model="goods_words" type="textarea" :maxlength="10000" :border="true" input-align="left"
+              placeholder="如果您想使用一键生成商品描述，可在此处，添加关键词" />
           </view>
         </view>
       </view>
@@ -50,17 +60,20 @@
       <view class="addgoods_top">
         <view class="addgoods_top_class">
           <view class="top_class_text" @click="checkaddres"> 交易位置： </view>
-          <view class="top_class_text" @click="checkaddres">
-            {{ address||'点击此处选择交易位置' }}
+          <view
+            style=" padding-right: 20rpx; padding-left: 10rpx;  font-size: 18px;  font-weight: 500; display: flex; align-items: center;"
+            @click="checkaddres">
+            {{ address || '点击此处选择交易位置' }}
           </view>
         </view>
       </view>
       <view class="addgoods_top">
         <view class="addgoods_top_class">
-          <view class="top_class_text"> 加入存放：
-            <p style="font-weight: 300;font-size: 12px;">加入后统一去存放点寻找交易物品</p>
+          <view class="">
+            <view class="top_class_text">加入存放：</view>
+            <p style="font-weight: 300;font-size: 12px; padding-left: 10px;">加入后统一去存放点寻找交易物品</p>
           </view>
-          <view class="top_class_text">
+          <view style="padding-right: 20px;">
             <u-switch v-model="checked" @change="swtichchange"></u-switch>
           </view>
         </view>
@@ -79,32 +92,32 @@
 // https://blog.csdn.net/qq_36901092/article/details/130326103
 import CryptoJS from 'crypto-js';
 import indexStore from "../../../store/index.js";
-	// import * as utf8 from "utf8"
-	// import URL from 'url'
-  import * as base64 from "base-64"
+// import * as utf8 from "utf8"
+// import URL from 'url'
+import * as base64 from "base-64"
 export default {
   data() {
     return {
-// ======================================
-TEXT: '',
-				// 地址必须填写，代表着大模型的版本号！！！！！！！！！！！！！！！！
-				httpUrl: "https://spark-api.xf-yun.com/v3.1/chat",
-				modelDomain: '', // V1.1-V3.5动态获取，高于以上版本手动指定
-				APISecret: 'MDMxYjIzZWI1ZTdlZDE4NTllOTRhYTVk',
-				APIKey: '1398f259b3fec19a20e02d86aadb86eb',
-				sparkResult: '',
-				historyTextList: [], // 历史会话信息，由于最大token12000,可以结合实际使用，进行移出
-				tempRes: '', // 临时答复保存
-// =========================================
+      // ======================================
+      TEXT: '',
+      // 地址必须填写，代表着大模型的版本号！！！！！！！！！！！！！！！！
+      httpUrl: "https://spark-api.xf-yun.com/v3.1/chat",
+      modelDomain: '', // V1.1-V3.5动态获取，高于以上版本手动指定
+      APISecret: 'MDMxYjIzZWI1ZTdlZDE4NTllOTRhYTVk',
+      APIKey: '1398f259b3fec19a20e02d86aadb86eb',
+      sparkResult: '',
+      historyTextList: [], // 历史会话信息，由于最大token12000,可以结合实际使用，进行移出
+      tempRes: '', // 临时答复保存
+      // =========================================
 
 
 
 
 
 
-      
-   socket :null,// 声明全局变量保存 WebSocket 对象
-   aiResponse : [],// 声明一个数组保存 AI 的回答
+      goods_words: '',
+      socket: null,// 声明全局变量保存 WebSocket 对象
+      aiResponse: [],// 声明一个数组保存 AI 的回答
       checked: false,
       type: "textarea",
       border: true,
@@ -162,21 +175,21 @@ TEXT: '',
   },
   onLoad() {
 
-      this.tablist = indexStore.state.list;
-      const that = this;
-      uni.chooseLocation({
-        success: function (res) {
-          console.log("位置名称：" + res.name);
-          console.log("详细地址：" + res.address);
-          console.log("纬度：" + res.latitude);
-          console.log("经度：" + res.longitude);
-          that.address = res.address;
-          that.latitude = res.latitude;
-          that.longitude = res.longitude;
-          console.log(that.address);
-        },
-      });
-    },
+    this.tablist = indexStore.state.list;
+    const that = this;
+    uni.chooseLocation({
+      success: function (res) {
+        console.log("位置名称：" + res.name);
+        console.log("详细地址：" + res.address);
+        console.log("纬度：" + res.latitude);
+        console.log("经度：" + res.longitude);
+        that.address = res.address;
+        that.latitude = res.latitude;
+        that.longitude = res.longitude;
+        console.log(that.address);
+      },
+    });
+  },
   methods: {
     checkaddres() {
       const that = this;
@@ -201,191 +214,194 @@ TEXT: '',
         this.address = '交易存放点'
       }
     },
-    aititle(){
-      const aititle = '商品名称为'+this.goods_name+'的商品,'+'他的价格为'+this.goods_price+'元，'+'他的分类是'+this.classlist.label+',他的交易位置是'+this.address+',请为这件二手商品生成一段商品描述用于售卖'
+    aititle() {
+      let aititle = '商品名称为' + this.goods_name + '的商品,' + '他的价格为' + this.goods_price + '元，' + '他的分类是' + this.classlist.label + ',他的交易位置是' + this.address + ',请为这件二手商品生成一段商品描述用于售卖'
+      if (this.goods_words) {
+        aititle = aititle + '关键词为' + this.goods_words
+      }
       this.TEXT = aititle
       this.tempResv = ''
       this.goods_value = ''
       console.log(aititle);
       // const myUrl = this.getWebSocketUrl()
       this.getWebSocketUrl().then((resolvedUrl) => {
-  console.log('======================',resolvedUrl);
-  const myUrl = resolvedUrl
-  console.log('---------------',myUrl);
+        console.log('======================', resolvedUrl);
+        const myUrl = resolvedUrl
+        console.log('---------------', myUrl);
         // this.startsocket(url)
         this.tempRes = "";
-				// this.sparkResult = "";
-				let realThis = this;
+        // this.sparkResult = "";
+        let realThis = this;
         this.socketTask = uni.connectSocket({
-					//url: encodeURI(encodeURI(myUrl).replace(/\+/g, '%2B')),
-					url: myUrl,
-					method: 'GET',
-					success: res => {
-						console.log(res, "ws成功连接...", myUrl)
-						realThis.wsLiveFlag = true;
-					},
+          //url: encodeURI(encodeURI(myUrl).replace(/\+/g, '%2B')),
+          url: myUrl,
+          method: 'GET',
+          success: res => {
+            console.log(res, "ws成功连接...", myUrl)
+            realThis.wsLiveFlag = true;
+          },
           fail: err => {
-            console.log('err',err);
+            console.log('err', err);
           }
-				})
+        })
         realThis.socketTask.onError((res) => {
-					console.log("连接发生错误，请检查appid是否填写", res)
-				})
-        console.log(this.socketTask,'==========');
+          console.log("连接发生错误，请检查appid是否填写", res)
+        })
+        console.log(this.socketTask, '==========');
         realThis.socketTask.onOpen((res) => {
-					this.historyTextList.push({
-						"role": "user",
-						"content": this.TEXT
-					})
-					console.info("wss的onOpen成功执行...", res)
-					// 第一帧..........................................
-					console.log('open成功...')
-					let params = {
-						"header": {
-							"app_id": '86a192cf',
-							"uid": "aef9f963-7"
-						},
-						"parameter": {
-							"chat": {
-								"domain": this.modelDomain,
-								"temperature": 0.5,
-								"max_tokens": 1024
-							}
-						},
-						"payload": {
-							"message": {
-								"text": this.historyTextList
-							}
-						}
-					};
-					console.log("请求的params：" + JSON.stringify(params))
-					this.sparkResult = this.sparkResult + "\r\n我：" + this.TEXT + "\r\n"
-					this.sparkResult = this.sparkResult + "大模型："
-					console.log("发送第一帧...", params)
-					realThis.socketTask.send({ // 发送消息，，都用uni的官方版本
-						data: JSON.stringify(params),
-						success() {
-							console.log('第一帧发送成功')
-						}
-					});
-				});
+          this.historyTextList.push({
+            "role": "user",
+            "content": this.TEXT
+          })
+          console.info("wss的onOpen成功执行...", res)
+          // 第一帧..........................................
+          console.log('open成功...')
+          let params = {
+            "header": {
+              "app_id": '86a192cf',
+              "uid": "aef9f963-7"
+            },
+            "parameter": {
+              "chat": {
+                "domain": this.modelDomain,
+                "temperature": 0.5,
+                "max_tokens": 1024
+              }
+            },
+            "payload": {
+              "message": {
+                "text": this.historyTextList
+              }
+            }
+          };
+          console.log("请求的params：" + JSON.stringify(params))
+          this.sparkResult = this.sparkResult + "\r\n我：" + this.TEXT + "\r\n"
+          this.sparkResult = this.sparkResult + "大模型："
+          console.log("发送第一帧...", params)
+          realThis.socketTask.send({ // 发送消息，，都用uni的官方版本
+            data: JSON.stringify(params),
+            success() {
+              console.log('第一帧发送成功')
+            }
+          });
+        });
         realThis.socketTask.onMessage((res) => {
-					// console.log('收到API返回的内容：', res.data);
-					let obj = JSON.parse(res.data)
-					// console.log("我打印的"+obj.payload);
-					let dataArray = obj.payload.choices.text;
-					for (let i = 0; i < dataArray.length; i++) {
-						realThis.sparkResult = realThis.sparkResult + dataArray[i].content
-						realThis.tempRes = realThis.tempRes + dataArray[i].content
-            console.log("我打印的"+realThis.tempRes);
+          // console.log('收到API返回的内容：', res.data);
+          let obj = JSON.parse(res.data)
+          // console.log("我打印的"+obj.payload);
+          let dataArray = obj.payload.choices.text;
+          for (let i = 0; i < dataArray.length; i++) {
+            realThis.sparkResult = realThis.sparkResult + dataArray[i].content
+            realThis.tempRes = realThis.tempRes + dataArray[i].content
+            console.log("我打印的" + realThis.tempRes);
             this.goods_value = realThis.tempRes;
             console.log(this.goods_value);
-					}
-					// realThis.sparkResult =realThis.sparkResult+ 
-					let temp = JSON.parse(res.data)
-					console.log("0726",temp.header.code)
-					if (temp.header.code !== 0) {
-						console.log(`${temp.header.code}:${temp.message}`);
-						realThis.socketTask.close({
-							success(res) {
-								console.log('关闭成功', res)
-								realThis.wsLiveFlag = false;
-							},
-							fail(err) {
-								console.log('关闭失败', err)
-							}
-						})
-					}
-					if (temp.header.code === 0) {
-						if (res.data && temp.header.status === 2) {
-							realThis.sparkResult = realThis.sparkResult +
-								"\r\n**********************************************"
-							this.historyTextList.push({
-								"role": "assistant",
-								"content": this.tempRes
-							})
-							/* let dataArray= obj.payload.choices.text;
-							for(let i=0;i<dataArray.length;i++){
-								realThis.sparkResult =realThis.sparkResult+ dataArray[i].content
-							} */
-							setTimeout(() => {
-								realThis.socketTask.close({
-									success(res) {
-										console.log('关闭成功', res)
-									},
-									fail(err) {
-										// console.log('关闭失败', err)
-									}
-								})
-							}, 1000)
-						}
-					}
-				})
+          }
+          // realThis.sparkResult =realThis.sparkResult+ 
+          let temp = JSON.parse(res.data)
+          console.log("0726", temp.header.code)
+          if (temp.header.code !== 0) {
+            console.log(`${temp.header.code}:${temp.message}`);
+            realThis.socketTask.close({
+              success(res) {
+                console.log('关闭成功', res)
+                realThis.wsLiveFlag = false;
+              },
+              fail(err) {
+                console.log('关闭失败', err)
+              }
+            })
+          }
+          if (temp.header.code === 0) {
+            if (res.data && temp.header.status === 2) {
+              realThis.sparkResult = realThis.sparkResult +
+                "\r\n**********************************************"
+              this.historyTextList.push({
+                "role": "assistant",
+                "content": this.tempRes
+              })
+              /* let dataArray= obj.payload.choices.text;
+              for(let i=0;i<dataArray.length;i++){
+                realThis.sparkResult =realThis.sparkResult+ dataArray[i].content
+              } */
+              setTimeout(() => {
+                realThis.socketTask.close({
+                  success(res) {
+                    console.log('关闭成功', res)
+                  },
+                  fail(err) {
+                    // console.log('关闭失败', err)
+                  }
+                })
+              }, 1000)
+            }
+          }
+        })
         // 在这里可以继续处理 resolvedUrl，比如创建 WebSocket 连接等操作
       }).catch((error) => {
         console.error('获取 WebSocket URL 失败:', error);
       });
 
-      },
-    			// 鉴权
-			 getWebSocketUrl() {
-				console.log(this.httpUrl)
-				var httpUrlHost = (this.httpUrl).substring(8, 28);
-				var httpUrlPath = (this.httpUrl).substring(28);
-				console.log(httpUrlHost)
-				console.log(httpUrlPath)
-				switch (httpUrlPath) {
-					case "/v1.1/chat":
-						this.modelDomain = "general";
-						break;
-					case "/v2.1/chat":
-						this.modelDomain = "generalv2";
-						break;
-					case "/v3.1/chat":
-						this.modelDomain = "generalv3";
-						break;
-					case "/v3.5/chat":
-						this.modelDomain = "generalv3.5";
-						break;
-				}
-				console.log(this.modelDomain)
+    },
+    // 鉴权
+    getWebSocketUrl() {
+      console.log(this.httpUrl)
+      var httpUrlHost = (this.httpUrl).substring(8, 28);
+      var httpUrlPath = (this.httpUrl).substring(28);
+      console.log(httpUrlHost)
+      console.log(httpUrlPath)
+      switch (httpUrlPath) {
+        case "/v1.1/chat":
+          this.modelDomain = "general";
+          break;
+        case "/v2.1/chat":
+          this.modelDomain = "generalv2";
+          break;
+        case "/v3.1/chat":
+          this.modelDomain = "generalv3";
+          break;
+        case "/v3.5/chat":
+          this.modelDomain = "generalv3.5";
+          break;
+      }
+      console.log(this.modelDomain)
 
 
-				return new Promise((resolve, reject) => {
-					// https://spark-api.xf-yun.com/v1.1/chat  V1.5 domain general
-					// https://spark-api.xf-yun.com/v2.1/chat  V2.0 domain generalv2
-					var url = "wss://"+httpUrlHost+httpUrlPath;
-					var host = "spark-api.xf-yun.com";
-					var apiKeyName = "api_key";
-					var date = new Date().toGMTString();
-					var algorithm = "hmac-sha256";
-					var headers = "host date request-line";
-					var signatureOrigin = `host: ${host}\ndate: ${date}\nGET ${httpUrlPath} HTTP/1.1`;
-					var signatureSha = CryptoJS.HmacSHA256(signatureOrigin, this.APISecret);
-					var signature = CryptoJS.enc.Base64.stringify(signatureSha);
-					var authorizationOrigin =
-						`${apiKeyName}="${this.APIKey}", algorithm="${algorithm}", headers="${headers}", signature="${signature}"`;
-					var authorization = base64.encode(authorizationOrigin);
-					url = `${url}?authorization=${authorization}&date=${encodeURI(date)}&host=${host}`;
+      return new Promise((resolve, reject) => {
+        // https://spark-api.xf-yun.com/v1.1/chat  V1.5 domain general
+        // https://spark-api.xf-yun.com/v2.1/chat  V2.0 domain generalv2
+        var url = "wss://" + httpUrlHost + httpUrlPath;
+        var host = "spark-api.xf-yun.com";
+        var apiKeyName = "api_key";
+        var date = new Date().toGMTString();
+        var algorithm = "hmac-sha256";
+        var headers = "host date request-line";
+        var signatureOrigin = `host: ${host}\ndate: ${date}\nGET ${httpUrlPath} HTTP/1.1`;
+        var signatureSha = CryptoJS.HmacSHA256(signatureOrigin, this.APISecret);
+        var signature = CryptoJS.enc.Base64.stringify(signatureSha);
+        var authorizationOrigin =
+          `${apiKeyName}="${this.APIKey}", algorithm="${algorithm}", headers="${headers}", signature="${signature}"`;
+        var authorization = base64.encode(authorizationOrigin);
+        url = `${url}?authorization=${authorization}&date=${encodeURI(date)}&host=${host}`;
 
-					// console.log(url)
-					resolve(url); // 主要是返回地址
-				});
-			},
-  //     async changeurl(){
-  //       const url = this.getWebSocketUrl()
-  //       // console.log(url,'=1=1=1=1=');
-  //       try {
-  //   const resolvedUrl = await url;
-  //   // resolvedUrl 是 Promise 解析后的实际 URL 字符串
-  //   console.log(resolvedUrl);
-  //         return
-  //   // 在这里可以继续处理 resolvedUrl，比如创建 WebSocket 连接等操作
-  // } catch (error) {
-  //   console.error('Promise 解析失败:', error);
-  // }
-  //     },    
-     generateURL() {
+        // console.log(url)
+        resolve(url); // 主要是返回地址
+      });
+    },
+    //     async changeurl(){
+    //       const url = this.getWebSocketUrl()
+    //       // console.log(url,'=1=1=1=1=');
+    //       try {
+    //   const resolvedUrl = await url;
+    //   // resolvedUrl 是 Promise 解析后的实际 URL 字符串
+    //   console.log(resolvedUrl);
+    //         return
+    //   // 在这里可以继续处理 resolvedUrl，比如创建 WebSocket 连接等操作
+    // } catch (error) {
+    //   console.error('Promise 解析失败:', error);
+    // }
+    //     },    
+    generateURL() {
       // 生成签名所需的参数
       const APIKey = '1398f259b3fec19a20e02d86aadb86eb';
       const APISecret = 'MDMxYjIzZWI1ZTdlZDE4NTllOTRhYTVk';
@@ -403,10 +419,10 @@ TEXT: '',
       const signature = CryptoJS.enc.Base64.stringify(tmpSha);
       const authorizationOrigin = `api_key="${APIKey}", algorithm="hmac-sha256", headers="host date request-line", signature="${signature}"`;
       if (typeof btoa === 'undefined') {
-  global.btoa = function(str) {
-    return Buffer.from(str, 'binary').toString('base64');
-  };
-}
+        global.btoa = function (str) {
+          return Buffer.from(str, 'binary').toString('base64');
+        };
+      }
       const authorization = btoa(authorizationOrigin);
 
       // 生成最终url
@@ -420,7 +436,7 @@ TEXT: '',
       return url;
     },
 
-    startsocket(url){
+    startsocket(url) {
       const socketTask = uni.connectSocket({
         url: url,
         success(res) {
@@ -428,24 +444,24 @@ TEXT: '',
         }
       });
       socketTask.onOpen(() => {
-  console.log('WebSocket连接已打开！');
+        console.log('WebSocket连接已打开！');
       });
       setTimeout(() => {
         socketTask.send({
-        data: '你好',
-        success(){
-          console.log('发送成功');
-        },
-        fail(error){
-        console.error('发送失败，错误信息：', error);
-    }
-        
-      });
+          data: '你好',
+          success() {
+            console.log('发送成功');
+          },
+          fail(error) {
+            console.error('发送失败，错误信息：', error);
+          }
+
+        });
       }, 1000);
-  
+
       socketTask.onMessage((message) => {
         const messageData = JSON.parse(message.data);
-  console.log('Received message data:', messageData);
+        console.log('Received message data:', messageData);
       });
 
       // socketTask.onClose((res) => {
@@ -456,125 +472,125 @@ TEXT: '',
         console.error('WebSocket error:', error);
       });
     },
-    
-//      connectWebSocket() {
-//       const url = this.generateURL();
-//       console.log(url);
 
-//       // 测试uniappsocket
-//       this.socket = uni.connectSocket({
-//         url:url
-//       })
-//       // this.socket = new WebSocket(url);
+    //      connectWebSocket() {
+    //       const url = this.generateURL();
+    //       console.log(url);
 
-//       this.socket.onopen = function (event) {
-//         console.log("连接成功");
-//       };
+    //       // 测试uniappsocket
+    //       this.socket = uni.connectSocket({
+    //         url:url
+    //       })
+    //       // this.socket = new WebSocket(url);
 
-//       this.socket.onmessage = function (event) {
-//         const response = JSON.parse(event.data);
-//         if (response.payload && response.payload.choices && response.payload.choices.text && response.payload.choices.text.length > 0) {
-//           const text = response.payload.choices.text[0].content;
-//           this.aiResponse.push(text);
-//         } else {
-//           console.error("服务器返回的数据格式不正确");
-//           console.log(response);
-//         }
-//       };
+    //       this.socket.onopen = function (event) {
+    //         console.log("连接成功");
+    //       };
 
-//       this.socket.onclose = function (event) {
-//         console.log("连接关闭");
+    //       this.socket.onmessage = function (event) {
+    //         const response = JSON.parse(event.data);
+    //         if (response.payload && response.payload.choices && response.payload.choices.text && response.payload.choices.text.length > 0) {
+    //           const text = response.payload.choices.text[0].content;
+    //           this.aiResponse.push(text);
+    //         } else {
+    //           console.error("服务器返回的数据格式不正确");
+    //           console.log(response);
+    //         }
+    //       };
 
-//         // 在连接关闭后重新连接 WebSocket
-//         console.log("正在尝试重新连接...");
-//         this.connectWebSocket();
+    //       this.socket.onclose = function (event) {
+    //         console.log("连接关闭");
 
-//         // 在连接关闭后将所有的 AI 回答拼接成一个字符串返回给用户
-//         const aiResponseText = this.aiResponse.join(""); // 将回答数组拼接成一句话
-//         const chatHistory = '';
+    //         // 在连接关闭后重新连接 WebSocket
+    //         console.log("正在尝试重新连接...");
+    //         this.connectWebSocket();
 
-//         if (aiResponseText === '') {
-//           return;
-//         } else {
-//           console.log(aiResponseText);
+    //         // 在连接关闭后将所有的 AI 回答拼接成一个字符串返回给用户
+    //         const aiResponseText = this.aiResponse.join(""); // 将回答数组拼接成一句话
+    //         const chatHistory = '';
 
-//         }
+    //         if (aiResponseText === '') {
+    //           return;
+    //         } else {
+    //           console.log(aiResponseText);
 
-
-
-//         this.aiResponse = []; // 清空回答数组
-//         chatDiv.scrollTop = chatDiv.scrollHeight
-
-
-//       };
-//     },
-
-//      sendQuestion(item) {
-//       const userInput = item
-
-//       // 将用户的问题添加到聊天历史中
+    //         }
 
 
 
-
-//       // 检查 WebSocket 连接状态，如果已经关闭，就重新连接
-//       console.log('-====',this.socket.readyState);
-//       if (this.socket.readyState !== 1) {
-//         console.log("WebSocket 连接已关闭，正在尝试重新连接...");
-//         this.connectWebSocket();
-//       }
-
-//       // 发送问题给服务器
-//       // this.socket.send(JSON.stringify({
-//       //   header: {
-//       //     app_id: "86a192cf"
-//       //   },
-//       //   parameter: {
-//       //     chat: {
-//       //       domain: "generalv3",
-//       //       temperature: 0.5,
-//       //       max_tokens: 2048,
-//       //     }
-//       //   },
-//       //   payload: {
-//       //     message: {
-//       //       text: [
-//       //         { role: "user", content: userInput }
-//       //       ]
-//       //     }
-//       //   }
-//       // }));
-//       this.sendSocketMessage({
-//   header: {
-//     app_id: "86a192cf"
-//   },
-//   parameter: {
-//     chat: {
-//       domain: "generalv3",
-//       temperature: 0.5,
-//       max_tokens: 2048,
-//     }
-//   },
-//   payload: {
-//     message: {
-//       text: [
-//         { role: "user", content: userInput }
-//       ]
-//     }
-//   }
-// });
+    //         this.aiResponse = []; // 清空回答数组
+    //         chatDiv.scrollTop = chatDiv.scrollHeight
 
 
-//     },
-//     sendSocketMessage(msg) {
-//   if (true) {
-//     uni.sendSocketMessage({
-//       data: JSON.stringify(msg)
-//     });
-//   } else {
-//     socketMsgQueue.push(msg);
-//   }
-// },
+    //       };
+    //     },
+
+    //      sendQuestion(item) {
+    //       const userInput = item
+
+    //       // 将用户的问题添加到聊天历史中
+
+
+
+
+    //       // 检查 WebSocket 连接状态，如果已经关闭，就重新连接
+    //       console.log('-====',this.socket.readyState);
+    //       if (this.socket.readyState !== 1) {
+    //         console.log("WebSocket 连接已关闭，正在尝试重新连接...");
+    //         this.connectWebSocket();
+    //       }
+
+    //       // 发送问题给服务器
+    //       // this.socket.send(JSON.stringify({
+    //       //   header: {
+    //       //     app_id: "86a192cf"
+    //       //   },
+    //       //   parameter: {
+    //       //     chat: {
+    //       //       domain: "generalv3",
+    //       //       temperature: 0.5,
+    //       //       max_tokens: 2048,
+    //       //     }
+    //       //   },
+    //       //   payload: {
+    //       //     message: {
+    //       //       text: [
+    //       //         { role: "user", content: userInput }
+    //       //       ]
+    //       //     }
+    //       //   }
+    //       // }));
+    //       this.sendSocketMessage({
+    //   header: {
+    //     app_id: "86a192cf"
+    //   },
+    //   parameter: {
+    //     chat: {
+    //       domain: "generalv3",
+    //       temperature: 0.5,
+    //       max_tokens: 2048,
+    //     }
+    //   },
+    //   payload: {
+    //     message: {
+    //       text: [
+    //         { role: "user", content: userInput }
+    //       ]
+    //     }
+    //   }
+    // });
+
+
+    //     },
+    //     sendSocketMessage(msg) {
+    //   if (true) {
+    //     uni.sendSocketMessage({
+    //       data: JSON.stringify(msg)
+    //     });
+    //   } else {
+    //     socketMsgQueue.push(msg);
+    //   }
+    // },
 
 
 
@@ -625,17 +641,17 @@ TEXT: '',
               value: "0",
               label: "默认"
             },
-            this.goods_value =''
+              this.goods_value = ''
             this.address = ''
             this.latitude = ''
             this.longitude = ''
             this.checked = false
             this.$refs.uUpload.clear();
             // this.filesArr = []
-              uni.showToast({
-                title: "发布成功",
-                icon: "none",
-              });
+            uni.showToast({
+              title: "发布成功",
+              icon: "none",
+            });
             setTimeout(() => {
               uni.switchTab({
                 url: '/pages/home/home'
@@ -725,7 +741,7 @@ TEXT: '',
     .top_class_text {
       padding-right: 20rpx;
       padding-left: 10rpx;
-      // width: 20%;
+      width: 200rpx;
       font-size: 18px;
       font-weight: 500;
       display: flex;
@@ -784,22 +800,23 @@ TEXT: '',
     }
   }
 }
-.aititle{
+
+.aititle {
 
   display: flex;
   justify-content: center;
   margin: 20rpx;
 
-  .box{
+  .box {
     // width: 240rpx;
     border-radius: 20rpx;
-  border: 1px solid #b24949;
-  text-align: center;
-  padding: 20rpx;
-  background-color: #b24949;
-  color: #fff;
-  font-size: 20px;
-  font-weight: 500;
+    border: 1px solid #b24949;
+    text-align: center;
+    padding: 20rpx;
+    background-color: #b24949;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
   }
 }
 

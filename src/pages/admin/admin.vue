@@ -48,7 +48,7 @@
 			<view style="font-size: 16px; padding: 20rpx;">{{title}}</view>
 			<view class="main" style="padding: 20rpx;">
 				<view style="display: flex;width: 100%;">
-					<img style="width: 20%;height: 100rpx;" v-for="imgitem in showdata.img" :src=imgitem alt="" />
+					<img style="width: 20%;height: 100rpx;" v-for="(imgitem,index) in showdata.img" :key="index" :src=imgitem alt="" />
 				</view>
 				<view style="margin-top: 20rpx;">商品名称：{{showdata.goodsname}}</view>
 				<view style="margin-top: 20rpx;">商品价格：{{showdata.shopprice}}</view>
