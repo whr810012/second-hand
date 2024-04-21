@@ -20,8 +20,8 @@
 					<!-- <view class="demo-shop">
 									{{ item.shop }}
 								</view> -->
-					<u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close"
-						@click="remove(item.shopid)"></u-icon>
+					<!-- <u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close"
+						@click="remove(item.shopid,  $event)"></u-icon> -->
 				</view>
 			</template>
 
@@ -39,8 +39,8 @@
 					<!-- <view class="demo-shop">
 									{{ item.shop }}
 								</view> -->
-					<u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close"
-						@click="remove(item.shopid)"></u-icon>
+					<!-- <u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close"
+						@click="remove(item.shopid, $event)"></u-icon> -->
 				</view>
 			</template>
 		</u-waterfall>
@@ -56,6 +56,9 @@
 				<view style="margin-top: 20rpx;">商品描述：{{showdata.title}}</view>
 				<view style="margin-top: 20rpx;" v-if="showdata.time">交易时间：{{showdata.overtime}}</view>
 				<view style="margin-top: 20rpx;">交易地点：{{showdata.address}}</view>
+				<!-- 背景色淡一点 -->
+
+				<button style="width: 350rpx;background-color: #b24949;color: aliceblue;" @click="remove(showdata.shopid)">删除商品</button>
 			</view>
 		</u-popup>
 	</view>
@@ -72,7 +75,7 @@
 						name: '正在交易'
 					},
 				],
-				current: 1,
+				current: 0,
 				goodslist: [],
 				overgoodslist: [],
 				show:false,
@@ -82,6 +85,7 @@
 		},
 		methods: {
 			look(item) {
+				console.log('fuyuansu ');
 				this.showdata = item
 				this.show = true,
 				this.title = this.current ==0?'上架商品详情':'交易商品详情'
@@ -111,6 +115,9 @@
 				})
 			},
 			remove(shopid) {
+				// console.log('点击子元素', event);
+			// 组织冒泡到父元素
+				// event.stopPropagation();
 				if (this.current === 0) {
 					uni.request({
 						url: 'http://localhost:3000/deletegoods',

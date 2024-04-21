@@ -48,14 +48,14 @@
           <view class="foot-image scroll-view-item_H">
             <view class="foot_item_box">
               <view class="aitext">AI设计</view>
-              <image src="https://ceshiai-1317989680.cos.ap-nanjing.myqcloud.com/ai-loading.gif?q-sign-algorithm=sha1&q-ak=AKIDdRw3VBPW-vnkDxckP6eI5SAyE8a9dBatTNNw7ju1RG5RjKmWW4OEbF-CiI2_FYJn&q-sign-time=1713603825;1713607425&q-key-time=1713603825;1713607425&q-header-list=host&q-url-param-list=ci-process&q-signature=641e4f8bea56f7f6ce7d35dfba3dc538fd4989fd&x-cos-security-token=5zc60AWRmiSYmFPJADb6anWGoFmZrq4a24544884c2cd85f48322b4197af854ffMcz1Fxick9tGyUjl__theukHX9-eS29UbCpzHk8Ikp2RHfHFMT77XkPA54ggOQibUC7xkEf2mBUsOVUTh4VJufF3kh6YyYHq7NXYfQkUugQ-gAyorrd0uBeThjsHDk8exYmyLar-kUDZzY1o4YPAUhU_3_wc1jXb5sovWoWCNHKXA1q4XE1Uw3L1qQIo1H9M&ci-process=originImage" alt="" />
+              <image src="https://ceshiai-1317989680.cos.ap-nanjing.myqcloud.com/ai-loading.gif" alt="" />
               <view class="aitext">增加AI自由问答</view>
             </view>
           </view>
           <view class="foot-image scroll-view-item_H">
             <view class="foot_item_box">
               <view class="maptext">校园地图</view>
-              <image src="https://ceshiai-1317989680.cos.ap-nanjing.myqcloud.com/map.png?q-sign-algorithm=sha1&q-ak=AKIDmamx8x96XyCDSSPFZp1DC2jbi5JLZhOYp94J6PsuZmtHJm6Rqb6jAVFoi0LOGjxd&q-sign-time=1713603899;1713607499&q-key-time=1713603899;1713607499&q-header-list=host&q-url-param-list=ci-process&q-signature=0798e81a2fa4cedb996fe480772d58ebab591ed5&x-cos-security-token=4GRYG41YNTqB2xetpRlRETzdBuXi3wHa94757aaa4c198dd3ba4c6658131cf0f6u26ZXRAqmGTZp3i1VX9zxhJhfMbLNUejumusEa1L6s9YWh8BqzAiWqhqK6GxbORyfZ7y89D6Kjm5vcsVXONaFy3R-1Usq2D_cJSkdAiVudjCjVjcOpZI8prg_G0t1PLGD7l47tuPXS0H2qDSHS9blyFakdcPYieo1n-xX7KY661ZWaFNttJXJ7MLdMqNuAuZ&ci-process=originImage"></image>
+              <image src="https://ceshiai-1317989680.cos.ap-nanjing.myqcloud.com/map.png"></image>
               <view class="maptext">增加校园地图介绍</view>
             </view>
           </view>
