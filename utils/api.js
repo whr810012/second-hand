@@ -7,7 +7,7 @@ export const login = (data) => {
 };
 
 export const getAllGoods = () => {
-  return request("/getgoods");
+  return request("/getgoods",{});
 };
 
 export const addGoods = (data) => {

@@ -86,20 +86,18 @@ export default {
     };
   },
   async onLoad() {
-    // this.toBuy()
-    // await indexStore.dispatch("getUserPassStatus", {});
-    // if (
-    //   indexStore.state.userPassStatus.msg === "Expired" ||
-    //   indexStore.state.userPassStatus.msg === "Valid"
-    // ) {
-    //   console.log("进来就走");
-    //   uni.reLaunch({
-    //     url: "/pages/map/map",
-    //     fail: e => {
-    //       console.log(e);
-    //     }
-    //   });
-    // }
+    uni.getStorage({
+        key: 'userid',
+        success: function (res) {
+          console.log(res.data);
+          uni.reLaunch({
+            url: "/pages/home/home",
+            fail: e => {
+              console.log(e);
+            }
+          });
+        },
+        })
   },
   onShareAppMessage(res) {
     if (res.from === "button") {

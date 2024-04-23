@@ -193,6 +193,7 @@ export default {
 				console.log(this.overtime);
 				console.log(this.shopdetail.shopid);
 				const userid = uni.getStorageSync('userid')
+				
 				uni.request({
 					url: 'http://localhost:3000/addover',
 					method: 'POST',

@@ -18,7 +18,7 @@
     <view class="mygoods">
       <view class="pubu">
         <!-- <u-button @click="clear">清空列表</u-button> -->
-        <u-waterfall v-model="flowList" ref="uWaterfall">
+        <u-waterfall v-model="flowList" ref="uWaterfall2">
           <template v-slot:left="{ leftList }">
             <view class="demo-warter" v-for="(item, index) in leftList" :key="item.shopid">
               <!-- 警告：微信小程序中需要hx2.8.11版本才支持在template中结合其他组件，比如下方的lazy-load组件 -->
@@ -58,6 +58,7 @@
             </view>
           </template>
         </u-waterfall>
+        <view v-if="flowList.length === 0" style="margin-top: 100rpx;width: 100%;text-align: center;">您无商品正在出售</view>
       </view>
     </view>
     <u-tabbar class="tabbar" :list="tablist" :mid-button="true" bg-color="rgba(255, 255, 255, 1)"
@@ -68,11 +69,12 @@
 
 <script>
 import indexStore from "../../../store/index.js";
+import {getAllGoods} from '../../../utils/api.js'
 export default {
   data() {
     return {
       userid: '',
-      tablist: "",
+      tablist: indexStore.state.list,
       src: "https://th.bing.com/th/id/R.fd81516a06ce33c15b194494272fa6e9?rik=XAfnJ6A9NFvAyA&riu=http%3a%2f%2fimg.touxiangwu.com%2fuploads%2fallimg%2f2022053117%2fivhiashhpu1.jpg&ehk=Yi2aDhWvd0rnBKl1xloJy8F1RfGd8%2bcC75k4ff8dVXk%3d&risl=&pid=ImgRaw&r=0",
       nicheng: "",
       phone: 19861427087,
@@ -90,28 +92,35 @@ export default {
     this.src = uni.getStorageSync('userimg')
   },
   onShow() {
-    this.addRandomData();
+    // this.addRandomData();
     this.getgoods();
-    this.nicheng = uni.getStorageSync('username');
-    console.log(this.nicheng);
+    // this.nicheng = uni.getStorageSync('username');
+    // console.log(this.nicheng);
   },
   methods: {
 
-    getgoods() {
-      uni.request({
-        url: 'http://localhost:3000/getgoods',
-        method: 'GET',
-        success: (res) => {
-          console.log(res.data.data);
-          const goodslist = res.data.data;
-          this.userid = uni.getStorageSync('userid');
-          this.list = goodslist.filter(item => item.userid == this.userid)
-          this.addRandomData()
-          // console.log(this.list);
-          // console.log(this.goodslist);
-          console.log(this.flowList);
-        }
+    async getgoods() {
+      const res = await getAllGoods()
+			const goodslist = res.data
+      this.userid = uni.getStorageSync('userid');
+      this.list = goodslist.filter(item => item.userid == this.userid)
+      this.$nextTick( () => {
+        this.addRandomData()
       })
+      // uni.request({
+      //   url: 'http://localhost:3000/getgoods',
+      //   method: 'GET',
+      //   success: (res) => {
+      //     console.log(res.data.data);
+      //     const goodslist = res.data.data;
+      //     this.userid = uni.getStorageSync('userid');
+      //     this.list = goodslist.filter(item => item.userid == this.userid)
+      //     this.addRandomData()
+      //     // console.log(this.list);
+      //     // console.log(this.goodslist);
+      //     console.log(this.flowList);
+      //   }
+      // })
     },
     addRandomData() {
       this.flowList = this.list;
@@ -124,7 +133,7 @@ export default {
           shopid: id
         },
         success: (res) => {
-          this.$refs.uWaterfall.clear()
+          this.$refs.uWaterfall2.clear()
           this.getgoods()
         }
       })
@@ -155,7 +164,9 @@ export default {
 <style lang="scss" scoped>
 .infor {
   height: 500px;
-
+  z-index: 99999;
+  width: 100%;
+  height: 100%;
   // background-color: #000;
   .myinfor {
     height: 250rpx;

@@ -11,3 +11,13 @@ export const space = (lat1, lng1, lat2, lng2) => {
 	s = Math.round(s * 10000) / 10000;
 	return s // 单位千米
 }
+
+export const fileToBase64 = (file) => {
+	return new Promise((resolve, reject) => {
+		///专门用来读文件的工具类
+		const reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = () => resolve(reader.result);
+		reader.onerror = (error) => reject(error);
+	});
+}

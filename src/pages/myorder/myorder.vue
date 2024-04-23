@@ -96,6 +96,7 @@
 </template>
 
 <script>
+import {getMyorder} from '../../../utils/api.js'
 	export default {
 		data() {
 			return {
@@ -114,16 +115,10 @@
 			},
 			getgoods() {
 				const userid = uni.getStorageSync('userid');
-				uni.request({
-					url: 'http://localhost:3000/getover',
-					method: 'POST',
-					data: {
-						userid: userid
-					},
-					success: (res) => {
-						console.log(res.data);
-						this.maichu = res.data.maingoods
-						this.buy = res.data.buygoods
+				getMyorder({userid: userid}).then(res => {
+					console.log(123456789,res);
+						this.maichu = res.maingoods
+						this.buy = res.buygoods
 						this.maichu = this.maichu.map((item) => {
 							const date = new Date(item.overtime);
 							const year = date.getFullYear();
@@ -155,8 +150,50 @@
 							};
 						})
 						console.log(this.maichu);
-					}
 				})
+				// uni.request({
+				// 	url: 'http://localhost:3000/getover',
+				// 	method: 'POST',
+				// 	data: {
+				// 		userid: userid
+				// 	},
+				// 	success: (res) => {
+				// 		console.log(res.data);
+				// 		this.maichu = res.data.maingoods
+				// 		this.buy = res.data.buygoods
+				// 		this.maichu = this.maichu.map((item) => {
+				// 			const date = new Date(item.overtime);
+				// 			const year = date.getFullYear();
+				// 			const month = (date.getMonth() + 1).toString().padStart(2, '0');
+				// 			const day = date.getDate().toString().padStart(2, '0');
+				// 			const hours = date.getHours().toString().padStart(2, '0');
+				// 			const minutes = date.getMinutes().toString().padStart(2, '0');
+
+				// 			console.log(year, month, day, hours, minutes);
+
+				// 			return {
+				// 				...item,
+				// 				time: `${year}.${month}.${day}-${hours}:${minutes}`
+				// 			};
+				// 		})
+				// 		this.buy = this.buy.map((item) => {
+				// 			const date = new Date(item.overtime);
+				// 			const year = date.getFullYear();
+				// 			const month = (date.getMonth() + 1).toString().padStart(2, '0');
+				// 			const day = date.getDate().toString().padStart(2, '0');
+				// 			const hours = date.getHours().toString().padStart(2, '0');
+				// 			const minutes = date.getMinutes().toString().padStart(2, '0');
+
+				// 			console.log(year, month, day, hours, minutes);
+
+				// 			return {
+				// 				...item,
+				// 				time: `${year}.${month}.${day}-${hours}:${minutes}`
+				// 			};
+				// 		})
+				// 		console.log(this.maichu);
+				// 	}
+				// })
 			}
 		},
 		// 每次进入该页面都执行

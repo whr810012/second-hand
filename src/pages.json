@@ -11,6 +11,14 @@
 			}
 		},
 		{
+			"path" : "pages/home/home",
+			"style" : 
+			{
+				"navigationBarTitleText" : "主页",
+				"enablePullDownRefresh": true
+			}	
+		},
+		{
 			"path": "pages/goods/goods",
 			"style": {
 				"navigationBarTitleText": "全部商品"
@@ -35,17 +43,6 @@
 				"navigationBarTextStyle": "white"
 			}
 
-		},
-		{
-			"path" : "pages/home/home",
-			"style" : 
-			{
-				"navigationBarTitleText" : "主页",
-				
-				"enablePullDownRefresh": true
-			}
-		
-			
 		},
 		{
 			"path" : "pages/homemap/homemap",

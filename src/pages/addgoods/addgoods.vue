@@ -89,9 +89,10 @@
 </template>
 
 <script>
-// https://blog.csdn.net/qq_36901092/article/details/130326103
 import CryptoJS from 'crypto-js';
 import indexStore from "../../../store/index.js";
+import {addGoods} from '../../../utils/api.js'
+import {fileToBase64} from '../../../utils/utils.js'
 // import * as utf8 from "utf8"
 // import URL from 'url'
 import * as base64 from "base-64"
@@ -109,12 +110,6 @@ export default {
       historyTextList: [], // 历史会话信息，由于最大token12000,可以结合实际使用，进行移出
       tempRes: '', // 临时答复保存
       // =========================================
-
-
-
-
-
-
       goods_words: '',
       socket: null,// 声明全局变量保存 WebSocket 对象
       aiResponse: [],// 声明一个数组保存 AI 的回答
@@ -134,7 +129,7 @@ export default {
         value: "0",
         label: "默认",
       },
-      tablist: "",
+      tablist: indexStore.state.list,
       action: "http://www.example.com/upload",
       filesArr: [],
       // show:true,
@@ -174,21 +169,8 @@ export default {
     uni.stopPullDownRefresh();
   },
   onLoad() {
-
     this.tablist = indexStore.state.list;
     const that = this;
-    uni.chooseLocation({
-      success: function (res) {
-        console.log("位置名称：" + res.name);
-        console.log("详细地址：" + res.address);
-        console.log("纬度：" + res.latitude);
-        console.log("经度：" + res.longitude);
-        that.address = res.address;
-        that.latitude = res.latitude;
-        that.longitude = res.longitude;
-        console.log(that.address);
-      },
-    });
   },
   methods: {
     checkaddres() {
@@ -387,20 +369,7 @@ export default {
         // console.log(url)
         resolve(url); // 主要是返回地址
       });
-    },
-    //     async changeurl(){
-    //       const url = this.getWebSocketUrl()
-    //       // console.log(url,'=1=1=1=1=');
-    //       try {
-    //   const resolvedUrl = await url;
-    //   // resolvedUrl 是 Promise 解析后的实际 URL 字符串
-    //   console.log(resolvedUrl);
-    //         return
-    //   // 在这里可以继续处理 resolvedUrl，比如创建 WebSocket 连接等操作
-    // } catch (error) {
-    //   console.error('Promise 解析失败:', error);
-    // }
-    //     },    
+    }, 
     generateURL() {
       // 生成签名所需的参数
       const APIKey = '1398f259b3fec19a20e02d86aadb86eb';
@@ -473,132 +442,9 @@ export default {
       });
     },
 
-    //      connectWebSocket() {
-    //       const url = this.generateURL();
-    //       console.log(url);
-
-    //       // 测试uniappsocket
-    //       this.socket = uni.connectSocket({
-    //         url:url
-    //       })
-    //       // this.socket = new WebSocket(url);
-
-    //       this.socket.onopen = function (event) {
-    //         console.log("连接成功");
-    //       };
-
-    //       this.socket.onmessage = function (event) {
-    //         const response = JSON.parse(event.data);
-    //         if (response.payload && response.payload.choices && response.payload.choices.text && response.payload.choices.text.length > 0) {
-    //           const text = response.payload.choices.text[0].content;
-    //           this.aiResponse.push(text);
-    //         } else {
-    //           console.error("服务器返回的数据格式不正确");
-    //           console.log(response);
-    //         }
-    //       };
-
-    //       this.socket.onclose = function (event) {
-    //         console.log("连接关闭");
-
-    //         // 在连接关闭后重新连接 WebSocket
-    //         console.log("正在尝试重新连接...");
-    //         this.connectWebSocket();
-
-    //         // 在连接关闭后将所有的 AI 回答拼接成一个字符串返回给用户
-    //         const aiResponseText = this.aiResponse.join(""); // 将回答数组拼接成一句话
-    //         const chatHistory = '';
-
-    //         if (aiResponseText === '') {
-    //           return;
-    //         } else {
-    //           console.log(aiResponseText);
-
-    //         }
-
-
-
-    //         this.aiResponse = []; // 清空回答数组
-    //         chatDiv.scrollTop = chatDiv.scrollHeight
-
-
-    //       };
-    //     },
-
-    //      sendQuestion(item) {
-    //       const userInput = item
-
-    //       // 将用户的问题添加到聊天历史中
-
-
-
-
-    //       // 检查 WebSocket 连接状态，如果已经关闭，就重新连接
-    //       console.log('-====',this.socket.readyState);
-    //       if (this.socket.readyState !== 1) {
-    //         console.log("WebSocket 连接已关闭，正在尝试重新连接...");
-    //         this.connectWebSocket();
-    //       }
-
-    //       // 发送问题给服务器
-    //       // this.socket.send(JSON.stringify({
-    //       //   header: {
-    //       //     app_id: "86a192cf"
-    //       //   },
-    //       //   parameter: {
-    //       //     chat: {
-    //       //       domain: "generalv3",
-    //       //       temperature: 0.5,
-    //       //       max_tokens: 2048,
-    //       //     }
-    //       //   },
-    //       //   payload: {
-    //       //     message: {
-    //       //       text: [
-    //       //         { role: "user", content: userInput }
-    //       //       ]
-    //       //     }
-    //       //   }
-    //       // }));
-    //       this.sendSocketMessage({
-    //   header: {
-    //     app_id: "86a192cf"
-    //   },
-    //   parameter: {
-    //     chat: {
-    //       domain: "generalv3",
-    //       temperature: 0.5,
-    //       max_tokens: 2048,
-    //     }
-    //   },
-    //   payload: {
-    //     message: {
-    //       text: [
-    //         { role: "user", content: userInput }
-    //       ]
-    //     }
-    //   }
-    // });
-
-
-    //     },
-    //     sendSocketMessage(msg) {
-    //   if (true) {
-    //     uni.sendSocketMessage({
-    //       data: JSON.stringify(msg)
-    //     });
-    //   } else {
-    //     socketMsgQueue.push(msg);
-    //   }
-    // },
-
-
-
-
-
-
-
-    submit() {
+    async submit() {
+      console.log('filesArr',this.filesArr);
+      return
       const userid = uni.getStorageSync("userid");
       const shopname = uni.getStorageSync("username");
       const imglst = this.filesArr.map(item => item.url);
@@ -628,11 +474,13 @@ export default {
         shopname
       ) {
         console.log(data);
-        uni.request({
-          url: "http://localhost:3000/addgoods",
-          method: "POST",
-          data: data,
-          success: (res) => {
+        const res = await addGoods(data)
+        console.log(res);
+        // uni.request({
+        //   url: "http://localhost:3000/addgoods",
+        //   method: "POST",
+        //   data: data,
+        //   success: (res) => {
             console.log(res);
             this.filesArr = []
             this.goods_name = ''
@@ -645,6 +493,7 @@ export default {
             this.address = ''
             this.latitude = ''
             this.longitude = ''
+            this.goods_words = ''
             this.checked = false
             this.$refs.uUpload.clear();
             // this.filesArr = []
@@ -659,8 +508,8 @@ export default {
             }, 1500);
 
 
-          }
-        })
+          // }
+        // })
       } else {
         if (userid && shopname) {
           uni.showToast({
@@ -680,6 +529,8 @@ export default {
     },
     onchoosecomplete(lists) {
       this.filesArr = lists;
+      const base64 = fileToBase64(lists[0].file)
+      console.log('+64',base64);
       console.log("asddasd", this.filesArr);
     },
 
@@ -741,7 +592,7 @@ export default {
     .top_class_text {
       padding-right: 20rpx;
       padding-left: 10rpx;
-      width: 200rpx;
+      min-width: 200rpx;
       font-size: 18px;
       font-weight: 500;
       display: flex;

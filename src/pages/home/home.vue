@@ -36,7 +36,7 @@
 		<!-- 瀑布流 -->
 		<view class="pubu" v-if="wf_show">
 			<!-- <u-button @click="clear">清空列表</u-button> -->
-			<u-waterfall class="wrap-box" v-model="flowList" ref="uWaterfall">
+			<u-waterfall  class="wrap-box" v-model="flowList" ref="uWaterfall">
 				<template v-slot:left="{ leftList }">
 					<view class="demo-warter" v-for="(item, index) in leftList" :key="item.shopid" @click="gobuy(item)">
 						<!-- 警告：微信小程序中需要hx2.8.11版本才支持在template中结合其他组件，比如下方的lazy-load组件 -->
@@ -90,8 +90,9 @@
 					</view>
 				</template>
 			</u-waterfall>
+			<view v-if="flowList.length === 0" style="margin-top: 100rpx;width: 100%;text-align: center;">暂无商品售卖</view>
 			<!-- <u-loadmore bg-color="rgb(240, 240, 240)" :status="loadStatus" @loadmore="addRandomData"></u-loadmore> -->
-
+			
 		</view>
 		<u-tabbar class="tabbar" :list="tablist" :mid-button="true" bg-color="rgba(255, 255, 255, 1)"
 			inactive-color="rgba(41, 44, 53, 0.30)" mid-button-size="150rpx" icon-size="50rpx">
@@ -102,6 +103,7 @@
 
 <script>
 import indexStore from '../../../store/index.js'
+import {getAllGoods} from '../../../utils/api.js'
 export default {
 	data() {
 		return {
@@ -199,22 +201,24 @@ export default {
 			},
 
 			],
-			tablist: ''
+			tablist: indexStore.state.list
 		}
 	},
 	onLoad() {
-		this.addRandomData();
 		this.tablist = indexStore.state.list
 		this.getgoods()
+		// this.addRandomData();
 		if (uni.getStorageSync('admin')) {
 			this.admin = uni.getStorageSync('admin');
 		}
 		console.log(this.admin);
 	},
 	onShow() {
-		this.addRandomData();
+		// this.addRandomData();
 		this.getgoods();
+		if (uni.getStorageSync('admin')) {
 		this.admin = uni.getStorageSync('admin');
+		}
 	},
 	// 计算属性
 
@@ -237,19 +241,23 @@ export default {
 
 
 	methods: {
-		getgoods() {
-			uni.request({
-				url: 'http://localhost:3000/getgoods',
-				method: 'GET',
-				success: (res) => {
-					console.log(res.data.data);
-					this.goodslist = res.data.data
-					this.addRandomData()
-					// console.log(this.list);
-					console.log(this.goodslist);
-					console.log(this.flowList);
-				}
-			})
+		async getgoods() {
+			const res = await getAllGoods()
+			this.goodslist = res.data
+			console.log('this.goodslist', this.goodslist);
+			this.addRandomData()
+			// uni.request({
+			// 	url: 'http://localhost:3000/getgoods',
+			// 	method: 'GET',
+			// 	success: (res) => {
+			// 		console.log(res.data.data);
+			// 		this.goodslist = res.data.data
+			// 		this.addRandomData()
+			// 		// console.log(this.list);
+			// 		console.log(this.goodslist);
+			// 		console.log(this.flowList);
+			// 	}
+			// })
 		},
 		gomap() {
 			uni.navigateTo({
@@ -411,7 +419,7 @@ export default {
 			console.log('开始发布');
 		},
 		goadmin() {
-			uni.navigateTo({
+			uni.redirectTo({
 				url: `/pages/admin/admin`
 			});
 		}
