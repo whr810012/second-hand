@@ -21,15 +21,15 @@
 			<div class="search_input_box">
 				<input placeholder="    请输入搜索信息" class="search_input" type="text" v-model="inputdata" />
 			</div>
-			<div class="button_input" style="width: 20%;" @click='startsearch'>搜索</div>
+			<div class="button_input" style="width: 20%;" @click='startfulter'>搜索</div>
 		</div>
 		<!-- 筛选 -->
 		<view class="shaixuan">
 			<u-dropdown>
-				<u-dropdown-item @change="startsort" v-model="value1" title="排序" :options="options1"></u-dropdown-item>
-				<u-dropdown-item @change="startclass" height="450rpx" v-model="value2" title="分类"
+				<u-dropdown-item @change="startfulter" v-model="value1" title="排序" :options="options1"></u-dropdown-item>
+				<u-dropdown-item @change="startfulter" height="450rpx" v-model="value2" title="分类"
 					:options="options2"></u-dropdown-item>
-				<u-dropdown-item @change="changeaddress" v-model="value3" title="交易地点"
+				<u-dropdown-item @change="startfulter" v-model="value3" title="交易地点"
 					:options="options3"></u-dropdown-item>
 			</u-dropdown>
 		</view>
@@ -109,7 +109,7 @@ export default {
 		return {
 			admin: false,
 			// 搜索内容
-			searchname: '',
+			// inputdata: '',
 			// 轮播图数据
 			waraplist: [{
 				image: 'https://cdn.uviewui.com/uview/swiper/1.jpg',
@@ -275,15 +275,44 @@ export default {
 				}
 			});
 		},
+		startfulter () {
+			let filteredArray = this.goodslist
+			if(this.inputdata){
+				filteredArray = filteredArray.filter(obj => obj.title.includes(this.inputdata) || obj.goodsname.includes(this.inputdata));
+			}
+			if(this.value2 !== 1){
+				const classs = this.options2.filter(item => item.value === this.value2)[0].label
+				filteredArray = filteredArray.filter(item => item.class == classs)
+			}
+			if(this.value3 != 1){
+				if(this.value3 == 2){
+					filteredArray = filteredArray.filter(item => item.address === '交易存放点')
+				}else{
+					filteredArray = filteredArray.filter(item => item.address !== '交易存放点')
+				}
+			}
+			if(this.value1 != 1){
+				if(this.value1 == 2){
+					filteredArray = filteredArray.sort((a, b) => a.shopprice - b.shopprice)
+				}else{
+					filteredArray = filteredArray.sort((a, b) => b.shopprice - a.shopprice)
+				}
+			}
+			this.$refs.uWaterfall.clear();
+			this.$nextTick(() => {
+					this.flowList = filteredArray; // 重新赋值来触发更新
+				})
+			// this.flowList = filteredArray
 
+		},
 		startsearch() {
 			if (this.value1 === 1 && this.value2 === 1 && this.value3 === 1) {
 				console.log('beforeee====', this.flowList);
-				this.$refs.uWaterfall.clear();
 				// console.log('开始搜索', this.inputdata);
 				let filteredArray = this.goodslist.filter(obj => obj.title.includes(this.inputdata) || obj.goodsname.includes(this.inputdata));
 				// console.log('新的',filteredArray);
 				console.log('befor====', this.flowList);
+				this.$refs.uWaterfall.clear();
 				this.$nextTick(() => {
 					this.flowList = filteredArray; // 重新赋值来触发更新
 				})
@@ -293,15 +322,17 @@ export default {
 				return;
 			}
 			if (this.value1 !== 1 || this.value2 !== 1 || this.value3 !== 1) {
-				this.$refs.uWaterfall.clear();
-				console.log('开始搜索', this.inputdata);
+				console.log('开始搜索', this.inputdata,this.flowList);
 				let filteredArray = this.flowList.filter(obj => obj.title.includes(this.inputdata) || obj.goodsname.includes(this.inputdata));
 				console.log('新的', filteredArray);
-
+				this.$refs.uWaterfall.clear();
 				this.$nextTick(() => {
 					this.flowList = filteredArray; // 重新赋值来触发更新
 				})
 				console.log(this.flowList);
+			}
+			if(this.inputdata === ''){
+				this.getgoods()
 			}
 		},
 		startsort() {
@@ -316,9 +347,9 @@ export default {
 			if (this.value1 === 2) {
 				const arr = this.flowList
 				console.log('beforeee====', this.flowList);
-				this.$refs.uWaterfall.clear();
 				console.log('befor====', this.flowList);
 				let filteredArray = arr.sort((a, b) => a.shopprice - b.shopprice) // 重新赋值来触发更新
+				this.$refs.uWaterfall.clear();
 				this.$nextTick(() => {
 					this.flowList = filteredArray; // 重新赋值来触发更新
 				})
@@ -340,7 +371,7 @@ export default {
 			}
 
 		},
-		startclass() {
+		async startclass() {
 			console.log(this.value2);
 			const classs = this.options2.filter(item => item.value === this.value2)[0].label
 			console.log(classs);
@@ -354,17 +385,22 @@ export default {
 				}
 
 			}
-			if (this.value1 === 1 && this.searchname == '') {
-				this.$refs.uWaterfall.clear();
+			if (this.value1 === 1 && this.inputdata == '') {
 				let filteredArray = this.goodslist.filter(item => item.class == classs)
+				this.$refs.uWaterfall.clear();
 				this.$nextTick(() => {
 					this.flowList = filteredArray; // 重新赋值来触发更新
 				})
 
 			} else {
-				const arr = this.flowList
+				await this.startsearch()
+				await this.startsort()
+				// const arr = 
+				console.log(classs);
+				console.log('222222222222',this.flowList);
+				let filteredArray = this.flowList.filter(item => item.class == classs)
+				console.log(11111111111111111,filteredArray);
 				this.$refs.uWaterfall.clear();
-				let filteredArray = arr.filter(item => item.class == classs)
 				this.$nextTick(() => {
 					this.flowList = filteredArray; // 重新赋值来触发更新
 				})
@@ -372,7 +408,7 @@ export default {
 
 		},
 		changeaddress() {
-			this.searchname = ''
+			this.inputdata = ''
 			this.value1 = 1
 			this.value2 = 1
 			if (this.value3 === 1) {

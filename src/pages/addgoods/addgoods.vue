@@ -5,8 +5,9 @@
         <view class="addgoods_top_text"> 上传照片 </view>
         <!-- <img src="http://tmp/FBcUVoYgRv07cb764ec24278261909321f144dd5b5ed.png" alt=""> -->
         <u-upload ref="uUpload" :show-tips="false" :max-count="3" :auto-upload="false" :action="action"
-          @on-choose-complete="onchoosecomplete"></u-upload>
+          @on-choose-complete="onchoosecomplete" @on-remove="removeimg"></u-upload>
       </view>
+      <!-- <img :src="base64"></img> -->
       <view class="addgoods_top">
         <view class="addgoods_top_class">
           <view class="top_class_text">名称：</view>
@@ -99,6 +100,7 @@ import * as base64 from "base-64"
 export default {
   data() {
     return {
+      base64:[],
       // ======================================
       TEXT: '',
       // 地址必须填写，代表着大模型的版本号！！！！！！！！！！！！！！！！
@@ -444,11 +446,10 @@ export default {
 
     async submit() {
       console.log('filesArr',this.filesArr);
-      return
       const userid = uni.getStorageSync("userid");
       const shopname = uni.getStorageSync("username");
       const imglst = this.filesArr.map(item => item.url);
-
+      console.log(this.base64);
       const data = {
         goodsname: this.goods_name,
         goodsprice: this.goods_price,
@@ -528,10 +529,26 @@ export default {
       }
     },
     onchoosecomplete(lists) {
+      // this.base64 = []
       this.filesArr = lists;
-      const base64 = fileToBase64(lists[0].file)
-      console.log('+64',base64);
-      console.log("asddasd", this.filesArr);
+      // const that = this
+      // this.filesArr.forEach(async item => {
+      //   const base = await fileToBase64(item.file)
+      //   that.base64.push(base)
+      // })
+      // this.base64 = await fileToBase64(lists[0].file)
+      // console.log("asddasd", this.base64);
+    },
+    removeimg(index,lists){
+      this.base64 = []
+      this.filesArr = lists;
+      const that = this
+      this.filesArr.forEach(async item => {
+        const base = await fileToBase64(item.file)
+        that.base64.push(base)
+      })
+      // this.base64 = await fileToBase64(lists[0].file)
+      console.log("asddasd", this.base64);
     },
 
     confirm(e) {
