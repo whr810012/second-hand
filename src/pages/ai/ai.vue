@@ -1,6 +1,6 @@
 <template>
 	<view class="webview">
-		<web-view class="webview-box" src="https://wangdandan810012.gitee.io/ai/" frameborder="0"></web-view>
+		<web-view class="webview-box" src="https://whr810012.github.io/-AI/" frameborder="0"></web-view>
 	</view>
 </template>
 
